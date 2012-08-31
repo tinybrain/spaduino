@@ -6,6 +6,37 @@
 #include <DallasTemperature.h>
 #include <FiniteStateMachine.h>
 
+#include <avr/pgmspace.h>
+
+// --------------------------------------------------------------------
+
+/*
+
+Commands
+--------
+
+h  hello
+a  ack
+u  unknown
+e  error
+n  not ready
+i  invalid arg
+s  states
+t  time
+c  temp
+r  relays
+m  mode
+a  aux
+
+FSM debug messages
+------------------
+
+se  state enter
+su  update
+sx  exit
+
+*/
+
 // --------------------------------------------------------------------
 
 // Main error
@@ -14,12 +45,6 @@ enum Status { Ok, Unknown, TemperatureSensor, WaterLevelSensor, HighLimit };
 Status err = Ok;
 
 // Serial Commands
-
-#define ACK           "ack"
-#define UNKNOWN       "unknown"
-#define ERROR         "error"
-#define NOT_READY     "not ready"
-#define INVALID_ARG   "invalid arg"
 
 SerialCommand cmd;
 
@@ -31,8 +56,8 @@ OneWire tsBus(12);
 DallasTemperature ts(&tsBus);
 DeviceAddress tsAddress;
 
-const int tsResolution = 12;
-const int tsInterval = 750 / 1 << (12 - tsResolution);
+#define tsResolution 12
+#define tsInterval (750 / 1 << (12 - tsResolution))
 
 SimpleTimer tsTimer;
 
@@ -46,7 +71,7 @@ SimpleTimer tsTimer;
 
 struct Relays
 {
-  int safety, pump, heat, aux;
+  byte safety, pump, heat, aux;
 };
 
 Relays relays = 
@@ -54,8 +79,7 @@ Relays relays =
   8, 9, 10, 11
 };
 
-const int *rp = &relays.safety;
-const int numRelays = sizeof(Relays) / sizeof(int);
+Array<Relays, byte> _relays(relays);
 
 // FSM list
 
@@ -64,71 +88,69 @@ struct FSMS
   FSM mode, pump, aux;
 };
 
-FSMS f =
-{
-   FSM("mode"), FSM("pump"), FSM("aux")
-};
+FSMS fsm;
 
-FSM *fsms = &f.mode;
-const int numFSMs = sizeof(FSMS) / sizeof(FSM&);
+Array<FSMS, FSM> _fsm(fsm);
 
 // Mode FSM
 
 struct Mode
 {
-  S error, init, off, filter, autoheat, rapidheat, soak; 
+  State error, init, off, filter, autoheat, rapidheat, soak; 
 };
 
 Mode mode = 
 {
-  S("error"     , enterModeError),
-  S("init"      , enterModeInit, updateModeInit),
-  S("off"       , enterModeOff),
-  S("filter"    , enterModeFilter),
-  S("autoheat"  , enterModeAutoHeat),
-  S("rapidheat" , enterModeRapidHeat),
-  S("soak"      , enterModeSoak)
+  State(enterModeError),
+  State(enterModeInit, updateModeInit),
+  State(enterModeOff),
+  State(enterModeFilter),
+  State(enterModeAutoHeat),
+  State(enterModeRapidHeat),
+  State(enterModeSoak)
 };
+
+Array<Mode, State> _mode(mode);
 
 // Pump FSM
 
 struct Pump
 {
-  S error, off, on, heat;
+  State error, off, on, heat;
 };
 
 Pump pump =
 {
-  S("error"     , enterPumpError),
-  S("off"       , enterPumpOff),
-  S("on"        , enterPumpOn),
-  S("heat"      , enterPumpHeat)
+  State(enterPumpError),
+  State(enterPumpOff),
+  State(enterPumpOn),
+  State(enterPumpHeat)
 };
 
-const int numPumpStates = sizeof(pump) / sizeof(S);
+Array<Pump, State> _pump(pump);
 
 // Aux FSM
 
 struct Aux
 {
-  S off, on;
+  State off, on;
 };
 
 Aux aux =
 {
-  S("off"       , enterAuxOff),
-  S("on"        , enterAuxOn)
+  State(enterAuxOff),
+  State(enterAuxOn)
 };
 
-const int numAuxStates = sizeof(aux) / sizeof(S);
+Array<Aux, State> _aux(aux);
 
 // Setup
 
 void setupFSMs()
 {
-  f.mode.setup(sizeof(mode) / sizeof(S), (S*)&mode, stateLog);
-  f.pump.setup(sizeof(pump) / sizeof(S), (S*)&pump, stateLog);
-  f.aux.setup(sizeof(aux) / sizeof(S), (S*)&aux, stateLog);
+  fsm.mode.setup(0, _mode.count, _mode.data);
+  fsm.pump.setup(1, _pump.count, _pump.data);
+  fsm.aux.setup(2, _aux.count, _aux.data);
 }
 
 // --------------------------------------------------------------------
@@ -137,35 +159,23 @@ void setupFSMs()
 
 void setupSerialCommands()
 {
+  cmd.addCommand("h", sendAck);
+  cmd.addCommand("e", sendError);
+  cmd.addCommand("s", sendStates);
+  cmd.addCommand("t", onTime);
+  cmd.addCommand("c", sendTemperature);
+  cmd.addCommand("r", sendRelays);
+  cmd.addCommand("m", onMode);
+  cmd.addCommand("a", onAux);
+
   cmd.setDefaultHandler(onUnknown);
-
-  cmd.addCommand("hello", sendAck);
-  cmd.addCommand("error", sendError);
-  cmd.addCommand("states", sendStates);
-  cmd.addCommand("time", onTime);
-  cmd.addCommand("temp", sendTemperature);
-  cmd.addCommand("relays", sendRelays);
-  cmd.addCommand("mode", onMode);
-  cmd.addCommand("aux", onAux);
-}
-
-// log
-
-void fsmLog(const char *action, FSM &f)
-{
-  Serial << action << " " << f.name() << endl;
-}
-
-void stateLog(const char *action, S &s)
-{
-  Serial << action << " " << s.name() << endl;
 }
 
 // Receive
 
 void onUnknown(const char *cmd)
 {
-  Serial << UNKNOWN << endl;
+  Serial << "u" << endl;
 }
 
 void onTime()
@@ -178,8 +188,6 @@ void onTime()
     sendTime();
     return;
   }
-  
-  Serial << "timearg " << arg << endl;
   
   pctime = strtol(arg, NULL, 10);
   
@@ -198,7 +206,7 @@ void onMode()
 {
   if (checkError(mode.error)) return;
   
-  if (!f.mode.currentState()) { sendNotReady(); return; }
+  if (!fsm.mode.currentState()) { sendNotReady(); return; }
   
   char *arg = cmd.next();
   
@@ -208,34 +216,23 @@ void onMode()
     return;
   }
   
-  Serial << "modearg " << arg << endl;
+  int mi = strtol(arg, NULL, 10);
   
-  State *s = f.mode.states();
-  int mi = -1;
-  
-  for (int i = 0; i < f.mode.numStates(); ++i)
-  {
-    if (!strcmp(arg, s[i].name()))
-    {
-      mi = i;
-      break;
-    }
-  }
-  
-  if (mi < 0)
+  if ((mi <= 0 && strcmp(arg, "0")) || mi >= fsm.mode.numStates())
   {
     sendInvalidArg();
     return;
   }
   
-  s[mi]();
+  State *s = fsm.mode.states();
+  s[mi].transition();
 }
 
 void onAux()
 {
   if (checkError(mode.error)) return;
   
-  if (!f.aux.currentState()) { sendNotReady(); return; }
+  if (!fsm.aux.currentState()) { sendNotReady(); return; }
 
   toggleAux();
 }
@@ -255,28 +252,28 @@ bool checkError(State &errorState)
 
 void sendAck()
 {
-  Serial << ACK << endl;
+  Serial << "a " << endl;
 }
 
 void sendInvalidArg()
 {
-  Serial << INVALID_ARG << endl;
+  Serial << "i " << endl;
 }
 
 void sendError()
 {
-  Serial << ERROR << " 0x" << _HEX(err) << endl;
+  Serial << "e " << " " << err << endl;
 }
 
 void sendStates()
 {
-  Serial << "states";
+  Serial << "s";
   
-  for (int i = 0; i < numFSMs; ++i)
+  for (int i = 0; i < _fsm.count; ++i)
   {
-    FSM &f = fsms[i];
-    State *s = f.currentState();
-    Serial << " " << f.name() << ":" << (s ? s->name() : "-");
+    FSM &m = _fsm[i];
+    State *s = m.currentState();
+    Serial << " " << m.index() << ":" << (s ? s->index() : -1);
   }
 
   Serial << endl;
@@ -284,32 +281,32 @@ void sendStates()
 
 void sendNotReady()
 {
-  Serial << NOT_READY << endl;
+  Serial << "n" << endl;
 }
 
 void sendTime()
 {
-  Serial << "time " << now() << " status " << timeStatus() << endl;
+  Serial << "t " << now() << " " << timeStatus() << endl;
 }
 
 void sendTemperature()
 {
-  Serial << "temp " << _FLOAT(temperature, 3) << endl;
+  Serial << "c " << _FLOAT(temperature, 3) << endl;
 }
 
 void sendRelays()
 {
-  Serial << "relays ";
+  Serial << "r";
   
-  for (int i = 0; i < numRelays; ++i)
-    Serial << " " << digitalRead(rp[i]);
+  for (int i = 0; i < _relays.count; ++i)
+    Serial << " " << digitalRead(_relays[i]);
   
   Serial << endl;
 }
 
 void sendMode()
 {
-  Serial << "mode " << f.mode.currentState()->name() << endl;
+  Serial << "m " << fsm.mode.currentState()->index() << endl;
 }
 
 // --------------------------------------------------------------------
@@ -318,7 +315,7 @@ void sendMode()
 
 time_t requestSync()
 {
-  Serial << "sync" << endl;
+  Serial << "y" << endl;
 }
 
 // --------------------------------------------------------------------
@@ -360,9 +357,9 @@ void serviceTemperatureSensor()
 
 void setupIO()
 {
-  for (int i = 0; i < numRelays; ++i)
+  for (int i = 0; i < _relays.count; ++i)
   {
-    int r = rp[i];
+    int r = _relays[i];
     pinMode(r, OUTPUT);
     digitalWrite(r, LOW);
   }
@@ -388,13 +385,13 @@ void setAuxRelay(int aux)
 
 // Mode FSM Handlers
 
-void enterModeError(S &s)
+void enterModeError()
 {
   if (!pump.error.current())
-    pump.error.immediate();
+    pump.error.immediateTransition();
 }
 
-void enterModeInit(S &s)
+void enterModeInit()
 {
   setupSerialCommands();
   
@@ -403,78 +400,78 @@ void enterModeInit(S &s)
   setupTemperatureSensor();
   
   if (err)
-    mode.error.immediate();
+    mode.error.immediateTransition();
 }
 
-void updateModeInit(S &s)
+void updateModeInit()
 {
   if (timeStatus() == timeNotSet)
     return;
   
-  mode.off();  
+  mode.off.transition();  
 }
 
-void enterModeOff(S &s)
+void enterModeOff()
 {
-  pump.off();
-  aux.off();
+  pump.off.transition();
+  aux.off.transition();
 }
 
-void enterModeFilter(S &s)
+void enterModeFilter()
 {
-  pump.on();
+  pump.on.transition();
 }
 
-void enterModeAutoHeat(S &s)
-{
-  Serial << "unimplemented" << endl;
-  mode.off();
-}
-
-void enterModeRapidHeat(S &s)
-{
-  aux.off();
-  pump.heat();
-}
-
-void enterModeSoak(S &s)
+void enterModeAutoHeat()
 {
   Serial << "unimplemented" << endl;
-  mode.off();
+  mode.off.transition();
+}
+
+void enterModeRapidHeat()
+{
+  aux.off.transition();
+  pump.heat.transition();
+}
+
+void enterModeSoak()
+{
+  Serial << "unimplemented" << endl;
+  mode.off.transition();
 }
 
 // --------------------------------------------------------------------
 
 // Pump FSM Handlers
 
-void enterPumpError(S &s)
+void enterPumpError()
 {
-  aux.off.immediate();
+  aux.off.immediateTransition();
   
   setPumpRelays(0, 0, 0);
 }
 
-void enterPumpOff(S &s)
+void enterPumpOff()
 {
   setPumpRelays(1, 0, 0);
 }
 
-void enterPumpOn(S &s)
+void enterPumpOn()
 {
   setPumpRelays(1, 1, 0);
 }
 
-void enterPumpHeat(S &s)
+void enterPumpHeat()
 {
   setPumpRelays(1, 1, 1);
 }
 
-void updatePumpHeat(S &s)
+void updatePumpHeat()
 {
   if (!err)
     return;
     
-  pump.error.immediate();
+  pump.error.immediateTransition();
 }
 
 // --------------------------------------------------------------------
@@ -484,21 +481,21 @@ void updatePumpHeat(S &s)
 void toggleAux()
 {
   if (aux.on.current())
-    aux.off();
+    aux.off.transition();
   else
-    aux.on();
+    aux.on.transition();
 }
 
-void enterAuxOff(S &s)
+void enterAuxOff()
 {
   setAuxRelay(0);
   sendRelays();
 }
 
-void enterAuxOn(S &s)
+void enterAuxOn()
 {
   if (pump.heat.current())
-    pump.on.immediate();
+    pump.on.immediateTransition();
     
   setAuxRelay(1);
   sendRelays();
@@ -512,13 +509,13 @@ void setup(void)
 {
   Serial.begin(9600);
 
-  Serial << "ok, schedule me some bubbles!" << endl;
-
+  Serial << "ok, give me bubbles!" << endl;
+  
   setupFSMs();
 
   setSyncProvider(requestSync);
-  
-  mode.init();
+
+  mode.init.transition();
 }
 
 // Main
@@ -528,10 +525,9 @@ void loop(void)
   cmd.readSerial();
   
   tsTimer.run();
-
-  f.mode.update();
-  f.pump.update();
-  f.aux.update();  
+  
+  for (int i = 0; i < _fsm.count; ++i)
+    _fsm[i].update();
 }
 
 
