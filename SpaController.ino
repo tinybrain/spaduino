@@ -5,6 +5,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <FiniteStateMachine.h>
+#include "Schedule.h"
 
 #include <avr/pgmspace.h>
 
@@ -15,18 +16,21 @@
 Commands
 --------
 
-h  hello
-a  ack
-u  unknown
-e  error
-n  not ready
-i  invalid arg
-s  states
-t  time
-c  temp
-r  relays
-m  mode
-a  aux
+hi   hello
+ok   ack
+unk  unknown
+err  error
+nr   not ready
+inv  invalid arg
+st   states
+ti   time
+syn  sync
+tm   temp
+rly  relays
+md   mode
+a    aux
+sp   setpoint
+sc   schedules
 
 FSM debug messages
 ------------------
@@ -36,6 +40,15 @@ su  update
 sx  exit
 
 */
+
+// --------------------------------------------------------------------
+
+int freeRam ()
+{
+  extern int __heap_start, *__brkval; 
+  int v; 
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval); 
+}
 
 // --------------------------------------------------------------------
 
@@ -50,7 +63,7 @@ SerialCommand cmd;
 
 // Temperature
 
-float temperature = 0.0;
+int temperature = 0;
 
 OneWire tsBus(12);
 DallasTemperature ts(&tsBus);
@@ -112,6 +125,11 @@ Mode mode =
 
 Array<Mode, State> _mode(mode);
 
+void onSetMode(eMode mode)
+{
+  _mode[mode].transition();
+}
+
 // Pump FSM
 
 struct Pump
@@ -155,18 +173,35 @@ void setupFSMs()
 
 // --------------------------------------------------------------------
 
+// Schedule
+
+ScheduleItem scheduleItems[] =
+{
+//  Days       Start   End     Period  PrefDuty MaxDuty
+  { Fri | Sat  , 18    , 24    , 1     , 20     , 100  },
+  { Sat | Sun  , 0     , 2     , 1     , 10     , 100  },
+  { AllWeek    , 0     , 10    , 2     , 0      , 0    },
+  { AllWeek    , 0     , 24    , 2     , 10     , 100  }
+};
+
+Schedule schedule(scheduleItems, 4, 3750, onSetMode);
+
+// --------------------------------------------------------------------
+
 // Serial Commands
 
 void setupSerialCommands()
 {
-  cmd.addCommand("h", sendAck);
-  cmd.addCommand("e", sendError);
-  cmd.addCommand("s", sendStates);
-  cmd.addCommand("t", onTime);
-  cmd.addCommand("c", sendTemperature);
-  cmd.addCommand("r", sendRelays);
-  cmd.addCommand("m", onMode);
+  cmd.addCommand("hi", sendAck);
+  cmd.addCommand("err", sendError);
+  cmd.addCommand("st", sendStates);
+  cmd.addCommand("ti", onTime);
+  cmd.addCommand("tmp", sendTemperature);
+  cmd.addCommand("rly", sendRelays);
+  cmd.addCommand("md", onMode);
   cmd.addCommand("a", onAux);
+  cmd.addCommand("sp", onSetPoint);
+  cmd.addCommand("sc", sendSchedules);
 
   cmd.setDefaultHandler(onUnknown);
 }
@@ -175,7 +210,7 @@ void setupSerialCommands()
 
 void onUnknown(const char *cmd)
 {
-  Serial << "u" << endl;
+  Serial << "unk" << endl;
 }
 
 void onTime()
@@ -196,6 +231,8 @@ void onTime()
     sendInvalidArg();
     return;
   }
+  
+  pctime += 10 * SECS_PER_HOUR;
   
   setTime(pctime);
   
@@ -237,6 +274,31 @@ void onAux()
   toggleAux();
 }
 
+void onSetPoint()
+{
+  if (checkError(mode.error)) return;
+  
+  char *arg = cmd.next();
+  
+  if (!arg)
+  {
+    sendSetPoint();
+    return;
+  }
+  
+  int sp = strtol(arg, 0, 10);
+  
+  if (sp == 0 && strcmp(arg, "0"))
+  {
+    sendInvalidArg();
+    return;
+  }
+  
+  schedule.setSetPoint(sp);
+  
+  sendSetPoint();
+}
+
 // Send
 
 bool checkError(State &errorState)
@@ -252,28 +314,28 @@ bool checkError(State &errorState)
 
 void sendAck()
 {
-  Serial << "a " << endl;
+  Serial << "ok " << endl;
 }
 
 void sendInvalidArg()
 {
-  Serial << "i " << endl;
+  Serial << "inv " << endl;
 }
 
 void sendError()
 {
-  Serial << "e " << " " << err << endl;
+  Serial << "err " << " " << err << endl;
 }
 
 void sendStates()
 {
-  Serial << "s";
+  Serial << "st";
   
   for (int i = 0; i < _fsm.count; ++i)
   {
     FSM &m = _fsm[i];
     State *s = m.currentState();
-    Serial << " " << m.index() << ":" << (s ? s->index() : -1);
+    Serial << " " << (s ? s->index() : -1);
   }
 
   Serial << endl;
@@ -281,22 +343,22 @@ void sendStates()
 
 void sendNotReady()
 {
-  Serial << "n" << endl;
+  Serial << "nr" << endl;
 }
 
 void sendTime()
 {
-  Serial << "t " << now() << " " << timeStatus() << endl;
+  Serial << "ti " << now() << " " << timeStatus() << endl;
 }
 
 void sendTemperature()
 {
-  Serial << "c " << _FLOAT(temperature, 3) << endl;
+  Serial << "tmp " << temperature << endl;
 }
 
 void sendRelays()
 {
-  Serial << "r";
+  Serial << "rly";
   
   for (int i = 0; i < _relays.count; ++i)
     Serial << " " << digitalRead(_relays[i]);
@@ -306,7 +368,17 @@ void sendRelays()
 
 void sendMode()
 {
-  Serial << "m " << fsm.mode.currentState()->index() << endl;
+  Serial << "md " << fsm.mode.currentState()->index() << endl;
+}
+
+void sendSetPoint()
+{
+  Serial << "sp " << schedule._setPoint << endl;
+}
+
+void sendSchedules()
+{
+  schedule.printItems();
 }
 
 // --------------------------------------------------------------------
@@ -315,7 +387,7 @@ void sendMode()
 
 time_t requestSync()
 {
-  Serial << "y" << endl;
+  Serial << "syn" << endl;
 }
 
 // --------------------------------------------------------------------
@@ -341,7 +413,7 @@ void setupTemperatureSensor()
 
 void serviceTemperatureSensor()
 {
-  float newTemperature = ts.getTempCByIndex(0);
+  int newTemperature = (int)(ts.getTempCByIndex(0) * 100.0);
   ts.requestTemperatures();
   
   if (temperature == newTemperature)
@@ -516,6 +588,8 @@ void setup(void)
   setSyncProvider(requestSync);
 
   mode.init.transition();
+  
+  Serial << "free " << freeRam() << endl;
 }
 
 // Main
