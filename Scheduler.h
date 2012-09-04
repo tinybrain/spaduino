@@ -5,8 +5,7 @@
 #include <Time.h>
 #include <Streaming.h>
 
-
-enum eMode { Error, Init, Off, Filter, Autoheat, Rapidheat, Soak };
+enum eMode { Error, Init, Off, Autoheat, Rapidheat, Soak };
 
 enum eHeatMode { hNone, hMinimum, hMaximum };
 enum eWeekDay { Sun = 0x02, Mon = 0x04, Tue = 0x08, Wed = 0x10, Thu = 0x20 , Fri = 0x40 , Sat = 0x80 };
@@ -15,35 +14,39 @@ enum eWeekDay { Sun = 0x02, Mon = 0x04, Tue = 0x08, Wed = 0x10, Thu = 0x20 , Fri
 #define Weekend   Sun | Sat
 #define AllWeek   Weekdays | Weekend
 
+#define hr(_x) (_x * SECS_PER_HOUR)
+
 struct ScheduleItem
 {
   uint8_t  weekdays;
-  uint8_t  startTime;
-  uint8_t  endTime;
-  uint8_t  period;
-  uint8_t  prefDuty;
-  uint8_t  maxDuty;
+  uint16_t startTime;
+  uint16_t endTime;
+  uint16_t period;
+  uint8_t prefDuty;
+  uint8_t maxDuty;
 };
 
-class Schedule
+class Scheduler
 {
   public:  
 
-  Schedule(ScheduleItem *items, int count, int setPoint, void(*onSetMode)(eMode mode));
+  Scheduler
+    ( ScheduleItem *items
+    , int count
+    , void(*setModeCallback)(eMode mode)
+    );
   
-  void printItems();
-  
-  void setSetPoint(int setPoint);
+  void print();
   
   void update();
   ScheduleItem& itemForTime(time_t time);
-
+  
   ScheduleItem *_items;
   int _count;
-  int _setPoint;
+  
+  eMode _currentMode;
   void (*_setModeCallback)(eMode mode);
     
-  int _currentHour;
   ScheduleItem *_currentItem;
   
   time_t _period;
