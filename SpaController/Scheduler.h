@@ -5,9 +5,11 @@
 #include <Time.h>
 #include <Streaming.h>
 
-enum eMode { Error, Init, Off, Autoheat, Rapidheat, Soak };
+enum eMode { mError, mInit, mOff, mAutoheat, mRapidheat, mSoak };
+enum ePump { pError, pOff, pOn, pHeat };
 
-enum eHeatMode { hNone, hMinimum, hMaximum };
+enum eDutyState { dsUnder, dsMet, dsOver };
+
 enum eWeekDay { Sun = 0x02, Mon = 0x04, Tue = 0x08, Wed = 0x10, Thu = 0x20 , Fri = 0x40 , Sat = 0x80 };
 
 #define Weekdays  Mon | Tue | Wed | Thu | Fri
@@ -15,6 +17,7 @@ enum eWeekDay { Sun = 0x02, Mon = 0x04, Tue = 0x08, Wed = 0x10, Thu = 0x20 , Fri
 #define AllWeek   Weekdays | Weekend
 
 #define hr(_x) (_x * SECS_PER_HOUR)
+#define mn(_x) (_x * SECS_PER_MIN)
 
 struct ScheduleItem
 {
@@ -22,7 +25,7 @@ struct ScheduleItem
   uint16_t startTime;
   uint16_t endTime;
   uint16_t period;
-  uint8_t prefDuty;
+  uint8_t minDuty;
   uint8_t maxDuty;
 };
 
@@ -33,28 +36,33 @@ class Scheduler
   Scheduler
     ( ScheduleItem *items
     , int count
-    , void(*setModeCallback)(eMode mode)
     );
   
   void print();
-  
-  void update();
+
   ScheduleItem& itemForTime(time_t time);
+  
+  void update();  
+  void resetCycle();
+  
+  void startDutyTimer();
+  void stopDutyTimer();
+  void updateDutyTimer();
+  
+  eDutyState dutyState();
+  
+protected:
   
   ScheduleItem *_items;
   int _count;
   
-  eMode _currentMode;
-  void (*_setModeCallback)(eMode mode);
-    
   ScheduleItem *_currentItem;
   
-  time_t _period;
-  time_t _prefDuty;
-  time_t _maxDuty;
-  time_t _dutyOn;
-  time_t _dutyOff;
-  
+  time_t _cycleStart;
+  time_t _dutyOnMin;
+  time_t _dutyOnMax;
+  time_t _dutyOnLastUpdate;
+  time_t _dutyOnTimer;
 };
 
 #endif

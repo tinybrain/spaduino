@@ -48,7 +48,8 @@ class SerialHandler < EM::Connection
   def receive_line line
     puts line
     if line == "syn"
-      send_data "ti " + Time.now.to_i.to_s + "\n"
+      ts = "ti " + Time.now.to_i.to_s + "\n"
+      send_data ts
     else
 
     end

@@ -7,7 +7,7 @@
 #include <FiniteStateMachine.h>
 
 #include "Utils.h"
-#include "TempSensor.h"
+#include "Thermal.h"
 #include "Scheduler.h"
 
 // ====================================================================
@@ -59,7 +59,7 @@ SerialCommand cmd;
 
 // Temperature
 
-TempSensor ts(12, onTemperatureChanged);
+Thermal th(12, onTemperatureChanged);
 
 // Water level sensor
 
@@ -107,7 +107,7 @@ Mode mode =
   State(enterModeInit, updateModeInit),
   State(enterModeOff),
   State(enterModeFilter),
-  State(enterModeAutoHeat),
+  State(enterModeAutoHeat, updateModeAutoHeat),
   State(enterModeRapidHeat),
   State(enterModeSoak)
 };
@@ -164,16 +164,23 @@ void setupFSMs()
 
 // Schedule
 
+/*
 ScheduleItem scheduleItems[] =
 {
 //  Days         Start    End      Period   PrefDuty MaxDuty
-  { Fri | Sat  , hr(18) , hr(24) , hr(1)  , 20     , 100 },
-  { Sat | Sun  , hr(00) , hr(02) , hr(1)  , 10     , 100 },
-  { AllWeek    , hr(00) , hr(10) , hr(2)  , 0      , 0   },
-  { AllWeek    , hr(00) , hr(24) , hr(2)  , 10     , 100 }
+  { Fri | Sat  , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1) },
+  { Sat | Sun  , hr(00) , hr(02) , hr(1)  , mn(20) , hr(1) },
+  { AllWeek    , hr(00) , hr(8)  , hr(4)  , mn(20) , hr(4) },
+  { AllWeek    , hr(00) , hr(24) , hr(24) , 0      , 0 }
+};
+*/
+
+ScheduleItem scheduleItems[] =
+{
+  { AllWeek    , hr(00) , hr(24) , 15     , 5      , 10 }
 };
 
-Scheduler scheduler(scheduleItems, 4, onSetMode);
+Scheduler sch(scheduleItems, sizeof(scheduleItems) / sizeof(ScheduleItem));
 
 
 // ====================================================================
@@ -225,7 +232,7 @@ void sendNotReady()
 
 void sendInvalidArg()
 {
-  Serial << "inv " << endl;
+  Serial << "inv " << cmd.bufferPtr() << endl;
 }
 
 // --------------------------------------------------------------------
@@ -260,6 +267,8 @@ void sendStates()
     State *s = m.currentState();
     Serial << " " << (s ? s->index() : -1);
   }
+  
+  Serial << " " << th.triggerState() << "  " << sch.dutyState();
 
   Serial << endl;
 }
@@ -270,7 +279,7 @@ void sendStates()
 time_t requestSync()
 {
   Serial << "syn" << endl;
-  return now();
+  return 0;
 }
 
 // --------------------------------------------------------------------
@@ -287,17 +296,16 @@ void onTime()
     return;
   }
 
-  long t = strtol(arg, NULL, 10);
-  pctime = (time_t)t;
+  pctime = strtol(arg, NULL, 10);
 
-  if (pctime)
+  if (!pctime)
   {
     sendInvalidArg();
     return;
   }
 
   pctime += 10 * SECS_PER_HOUR;
-
+  
   setTime(pctime);
 
   sendTime();
@@ -316,7 +324,8 @@ void sendTime()
 
 void sendTemperature()
 {
-  Serial << "tmp " << ts.temperature() << endl;
+  Serial << "tmp " << th.temperature() << " " << th.setPoint()
+         << " " << _FLOAT(th.rate(), 4) << " " << th.triggerState() << endl;
 }
 
 // --------------------------------------------------------------------
@@ -399,22 +408,22 @@ void onSetPoint()
     return;
   }
 
-  int sp = strtol(arg, 0, 10);
+  float sp = (float)atof(arg);
 
-  if (sp == 0 && strcmp(arg, "0"))
+  if (sp == 0.0f && arg[0] != '0')
   {
     sendInvalidArg();
     return;
   }
-
-  // sp?
+  
+  th.setSetPoint(sp);
 
   sendSetPoint();
 }
 
 void sendSetPoint()
 {
-  Serial << "sp " << "?" << endl;
+  Serial << "sp " << th.setPoint() << endl;
 }
 
 // --------------------------------------------------------------------
@@ -422,7 +431,7 @@ void sendSetPoint()
 
 void sendSchedules()
 {
-  scheduler.print();
+  sch.print();
 }
 
 // ====================================================================
@@ -431,7 +440,7 @@ void sendSchedules()
 
 void onTemperatureChanged()
 {
-  if (ts.temperature() < -273.15)
+  if (th.temperature() < -273.15)
     err = TemperatureSensor;
 
   sendTemperature();
@@ -482,7 +491,7 @@ void enterModeInit()
 
   setupRelays();
 
-  ts.setup();
+  th.setup();
 
   if (err)
     mode.error.immediateTransition();
@@ -493,7 +502,7 @@ void updateModeInit()
   if (timeStatus() == timeNotSet)
     return;
 
-  mode.off.transition();  
+  mode.autoheat.transition();
 }
 
 void enterModeOff()
@@ -509,8 +518,25 @@ void enterModeFilter()
 
 void enterModeAutoHeat()
 {
-  Serial << "unimplemented" << endl;
-  mode.off.transition();
+  pump.off.transition();
+  aux.off.transition();
+}
+
+// ds under met over
+// ts low high
+
+ePump plu[2][3] =
+{
+  { pHeat, pHeat, pOff },
+  { pOn, pOn, pOff }
+};
+
+void updateModeAutoHeat()
+{
+  ePump p = plu[th.triggerState()][sch.dutyState()];
+  State &ps = _pump[p];
+  
+  ps.transition();
 }
 
 void enterModeRapidHeat()
@@ -521,8 +547,6 @@ void enterModeRapidHeat()
 
 void enterModeSoak()
 {
-  Serial << "unimplemented" << endl;
-  mode.off.transition();
 }
 
 // --------------------------------------------------------------------
@@ -538,16 +562,22 @@ void enterPumpError()
 
 void enterPumpOff()
 {
+  sch.stopDutyTimer();
+  
   setPumpRelays(1, 0, 0);
 }
 
 void enterPumpOn()
 {
+  sch.startDutyTimer();
+  
   setPumpRelays(1, 1, 0);
 }
 
 void enterPumpHeat()
 {
+  sch.startDutyTimer();
+  
   setPumpRelays(1, 1, 1);
 }
 
@@ -595,27 +625,28 @@ void setup(void)
 
   Serial << "ok, give me bubbles!" << endl;
   
-  return;
-
   setupFSMs();
 
   setSyncProvider(requestSync);
 
   mode.init.transition();
+  
+  Serial << "ts " << timeStatus() << endl;
 
-  Serial << "free " << freeRam() << endl;
+  Serial << "SRAM " << freeRam() << " bytes" << endl;  
 }
 
 // Main
 
 void loop(void)
 {
-  return;
-  
   cmd.readSerial();
 
-  ts.update();
-
+  th.update();
+  
+  if (timeStatus() != timeNotSet)
+    sch.update();
+  
   for (int i = 0; i < _fsm.count; ++i)
     _fsm[i].update();
 }
