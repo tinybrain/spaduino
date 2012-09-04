@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RUBY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="em-serialport (v0.0.2, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="eventmachine (v0.12.10, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="serialport (v1.1.0, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
+  </component>
+</module>
+

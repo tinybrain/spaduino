@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require 'em-serialport'
+
+if ARGV.size < 1
+  puts 'Usage: spaserver /dev/cu.your-usbdevice'
+  exit 1
+end
+
+serial_dev = ARGV.shift
+
+$clients = Array.new
+
+$kq = EM::Queue.new
+$tq = EM::Queue.new
+
+
+class SocketHandler < EM::Connection
+
+  def post_init
+    puts "++ new client"
+  end
+
+  def receive_data data
+    puts ">> " + data
+  end
+
+end
+
+class SerialHandler < EM::Connection
+  
+  include EM::Protocols::LineText2
+
+  def initialize
+    cb = Proc.new do |data|
+      send_data data + "\n"
+      $kq.pop &cb
+    end
+
+    $kq.pop &cb
+  end
+
+  def post_init
+    puts "-- serial server"
+  end
+
+  def receive_line line
+    puts line
+    if line == "syn"
+      send_data "ti " + Time.now.to_i.to_s + "\n"
+    else
+
+    end
+  end
+
+end
+
+class KeyboardHandler < EM::Connection
+  
+  include EM::Protocols::LineText2
+
+  def receive_line line
+    $kq.push line
+  end
+
+end
+
+EM::run do
+
+  EM::open_keyboard KeyboardHandler
+  EM::open_serial serial_dev, 9600, 8, 1, SerialPort::NONE, SerialHandler
+  EM::start_server "127.0.0.1", 8782, SocketHandler
+  
+end
