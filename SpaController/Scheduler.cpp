@@ -16,11 +16,12 @@ Scheduler::Scheduler
 , _count(count)
 , _currentItem(NULL)
 , _cycleStart(0)
-, _dutyOnTimer(0)
-, _dutyOnLastUpdate(0)
+, _dutyStart(0)
+, _dutyAccum(0)
+, _manualDuration(0)
 {}
 
-void Scheduler::print()
+void Scheduler::printSchedule()
 {
   update();
   
@@ -37,16 +38,59 @@ void Scheduler::print()
     Serial << digital(si.startTime)
     << " " << digital(si.endTime)
     << " " << digital(si.period)
-    << " " << si.minDuty
-    << " " << si.maxDuty;
+    << " " << digitalSec(si.minDuty)
+    << " " << digitalSec(si.maxDuty);
 
     if (&si == _currentItem)
       Serial << " **";
       
     Serial << endl;
   }
+}
+
+void Scheduler::printTimers()
+{
+  update();
   
-  Serial << "dtmr " << _dutyOnTimer << endl;
+  Serial << "stm"
+         << " " << digitalSec(cycleElapsed())
+         << " " << digitalSec(dutyElapsed())
+         << " " << digitalSec(_manualDuration)
+         << " " << digitalSec(_currentItem ? _currentItem->period : 0)
+         << endl;
+         
+  Serial << "cs " << _cycleStart << " ds " << _dutyStart << " da " << _dutyAccum << endl;
+}
+
+void Scheduler::reset()
+{
+  Serial << "rst" << endl;
+  
+  _cycleStart = now();
+  _dutyStart = 0;
+  _dutyAccum = 0;
+  _manualDuration = 0;
+}
+
+void Scheduler::manual(long duration)
+{
+  reset();
+  
+  _manualDuration = duration;
+  
+  startDutyTimer();
+}
+
+time_t Scheduler::cycleElapsed()
+{
+  return now() - _cycleStart;
+}
+
+time_t Scheduler::dutyElapsed()
+{
+  time_t de = _dutyStart ? now() - _dutyStart : 0;
+  de += _dutyAccum;
+  return de;
 }
 
 ScheduleItem& Scheduler::itemForTime(time_t time)
@@ -68,86 +112,62 @@ ScheduleItem& Scheduler::itemForTime(time_t time)
 
 void Scheduler::update()
 {
-  if (timeStatus() == timeNotSet)
+  if (timeStatus() == timeNotSet || _manualDuration)
     return;
-    
-  time_t n = now();
     
   // schedule
 
-  ScheduleItem &si = itemForTime(n);
+  ScheduleItem &si = itemForTime(now());
   
   if (&si != _currentItem)
   {
     _currentItem = &si;
-    resetCycle();
+    reset();
     return;
   }
   
   // cycle
   
-  if (n > _cycleStart + _currentItem->period)
+  if (cycleElapsed() > _currentItem->period)
   {
-    resetCycle();
+    reset();
     return;
   }
-  
-  // update duty
-  
-  updateDutyTimer(); 
-}
-
-void Scheduler::resetCycle()
-{
-  Serial << "rst" << endl;
-  
-  _cycleStart = now();
-  _dutyOnTimer = 0;
-  _dutyOnLastUpdate = 0;
 }
 
 void Scheduler::startDutyTimer()
 {
-  Serial << "gdt " << _dutyOnLastUpdate << endl;
-
-  if (_dutyOnLastUpdate)
+  if (_dutyStart)
     return;
   
-  _dutyOnLastUpdate = now();
+  _dutyStart = now();
 }
 
 void Scheduler::stopDutyTimer()
 {
-  Serial << "sdt " << _dutyOnLastUpdate << endl;
-
-  if (!_dutyOnLastUpdate)
+  if (!_dutyStart)
     return;
     
-  updateDutyTimer();
-    
-  _dutyOnLastUpdate = 0;
-}
-
-void Scheduler::updateDutyTimer()
-{
-  if (!_dutyOnLastUpdate)
-    return;
-    
-  time_t n = now();
-  
-  _dutyOnTimer += n - _dutyOnLastUpdate;
-  _dutyOnLastUpdate = n;
+  _dutyAccum += now() - _dutyStart;  
+  _dutyStart = 0;
 }
 
 eDutyState Scheduler::dutyState()
 {
-  if (_dutyOnTimer < _currentItem->minDuty)
+  if (_manualDuration)
+    return (cycleElapsed() < _manualDuration) ? dsUnder : dsOver;
+    
+  time_t de = dutyElapsed();
+  
+  if (de < _currentItem->minDuty)
     return dsUnder;
     
-  if (_dutyOnTimer >= _currentItem->maxDuty)
+  if (de >= _currentItem->maxDuty)
     return dsOver;
   
   return dsMet;
 }
+
+
 
 

@@ -7,8 +7,8 @@
 #include <FiniteStateMachine.h>
 
 #include "Utils.h"
-#include "Thermal.h"
 #include "Scheduler.h"
+#include "Thermal.h"
 
 // ====================================================================
 
@@ -32,6 +32,7 @@
  a    aux
  sp   setpoint
  sc   schedules
+ stm  scheduletimers  
  
  FSM debug messages
  ------------------
@@ -41,6 +42,31 @@
  sx  exit
  
  */
+
+// ====================================================================
+
+// Schedule
+
+/*
+ScheduleItem scheduleItems[] =
+{
+//  Days         Start    End      Period   PrefDuty MaxDuty
+  { Fri | Sat  , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1) },
+  { Sat | Sun  , hr(00) , hr(02) , hr(1)  , mn(20) , hr(1) },
+  { AllWeek    , hr(00) , hr(8)  , hr(4)  , mn(20) , hr(4) },
+  { AllWeek    , hr(00) , hr(24) , hr(24) , 0      , 0 }
+};
+*/
+
+ScheduleItem scheduleItems[] =
+{
+  { AllWeek    , hr(00) , hr(24) , 15     , 5      , 10 }
+};
+
+Scheduler sch(scheduleItems, sizeof(scheduleItems) / sizeof(ScheduleItem));
+
+#define soakDuration 15
+#define rapidHeatDuration hr(24)
  
 // ====================================================================
 
@@ -57,7 +83,7 @@ Status err = Ok;
 
 SerialCommand cmd;
 
-// Temperature
+// Thermal Sensor
 
 Thermal th(12, onTemperatureChanged);
 
@@ -66,6 +92,8 @@ Thermal th(12, onTemperatureChanged);
 
 // Heater element AC sense / High limit cutout
 
+
+// ====================================================================
 
 // Relays
 
@@ -94,11 +122,13 @@ FSMS fsm;
 
 Array<FSMS, FSM> _fsm(fsm);
 
+// --------------------------------------------------------------------
+
 // Mode FSM
 
 struct Mode
 {
-  State error, init, off, filter, autoheat, rapidheat, soak; 
+  State error, init, off, autoheat, rapidheat, soak; 
 };
 
 Mode mode = 
@@ -106,20 +136,18 @@ Mode mode =
   State(enterModeError),
   State(enterModeInit, updateModeInit),
   State(enterModeOff),
-  State(enterModeFilter),
-  State(enterModeAutoHeat, updateModeAutoHeat),
-  State(enterModeRapidHeat),
-  State(enterModeSoak)
+  State(0, updateModeAutoHeat, 0),
+  State(enterModeRapidHeat, updateModeRapidHeat, exitModeRapidHeat),
+  State(enterModeSoak, updateModeSoak, exitModeSoak)
 };
 
 Array<Mode, State> _mode(mode);
 
-void onSetMode(eMode mode)
-{
-  _mode[mode].transition();
-}
+// --------------------------------------------------------------------
 
 // Pump FSM
+
+enum ePump { pError, pOff, pOn, pHeat };
 
 struct Pump
 {
@@ -135,6 +163,8 @@ Pump pump =
 };
 
 Array<Pump, State> _pump(pump);
+
+// --------------------------------------------------------------------
 
 // Aux FSM
 
@@ -155,33 +185,10 @@ Array<Aux, State> _aux(aux);
 
 void setupFSMs()
 {
-  fsm.mode.setup(0, _mode.count, _mode.data);
+  fsm.mode.setup(0, _mode.count, _mode.data, sendMode);
   fsm.pump.setup(1, _pump.count, _pump.data);
   fsm.aux.setup(2, _aux.count, _aux.data);
 }
-
-// ====================================================================
-
-// Schedule
-
-/*
-ScheduleItem scheduleItems[] =
-{
-//  Days         Start    End      Period   PrefDuty MaxDuty
-  { Fri | Sat  , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1) },
-  { Sat | Sun  , hr(00) , hr(02) , hr(1)  , mn(20) , hr(1) },
-  { AllWeek    , hr(00) , hr(8)  , hr(4)  , mn(20) , hr(4) },
-  { AllWeek    , hr(00) , hr(24) , hr(24) , 0      , 0 }
-};
-*/
-
-ScheduleItem scheduleItems[] =
-{
-  { AllWeek    , hr(00) , hr(24) , 15     , 5      , 10 }
-};
-
-Scheduler sch(scheduleItems, sizeof(scheduleItems) / sizeof(ScheduleItem));
-
 
 // ====================================================================
 
@@ -199,6 +206,7 @@ void setupSerialCommands()
   cmd.addCommand("a", onAux);
   cmd.addCommand("sp", onSetPoint);
   cmd.addCommand("sc", sendSchedules);
+  cmd.addCommand("stm", sendScheduleTimers);
 
   cmd.setDefaultHandler(onUnknown);
 }
@@ -431,7 +439,15 @@ void sendSetPoint()
 
 void sendSchedules()
 {
-  sch.print();
+  sch.printSchedule();
+}
+
+// --------------------------------------------------------------------
+// scheduletimers
+
+void sendScheduleTimers()
+{
+  sch.printTimers();
 }
 
 // ====================================================================
@@ -485,6 +501,10 @@ void enterModeError()
     pump.error.immediateTransition();
 }
 
+// --------------------------------------------------------------------
+
+// Init
+
 void enterModeInit()
 {
   setupSerialCommands();
@@ -505,48 +525,94 @@ void updateModeInit()
   mode.autoheat.transition();
 }
 
+void exitModeInit()
+{
+  pump.off.transition();
+  aux.off.transition();
+}
+
+// --------------------------------------------------------------------
+
+// Off
+
 void enterModeOff()
 {
   pump.off.transition();
   aux.off.transition();
 }
 
-void enterModeFilter()
-{
-  pump.on.transition();
-}
+// --------------------------------------------------------------------
 
-void enterModeAutoHeat()
-{
-  pump.off.transition();
-  aux.off.transition();
-}
-
-// ds under met over
-// ts low high
-
-ePump plu[2][3] =
-{
-  { pHeat, pHeat, pOff },
-  { pOn, pOn, pOff }
-};
+// AutoHeat
 
 void updateModeAutoHeat()
 {
-  ePump p = plu[th.triggerState()][sch.dutyState()];
-  State &ps = _pump[p];
+  ePump p = pOff;
   
-  ps.transition();
+  if (sch.dutyState() != dsOver)
+  {
+    p = (th.triggerState() == tsHigh && !aux.on.current())
+      ? pHeat : pOn;
+  }
+  
+  _pump[p].transition();
 }
+
+// --------------------------------------------------------------------
+
+// RapidHeat
 
 void enterModeRapidHeat()
 {
-  aux.off.transition();
+  sch.manual(rapidHeatDuration);
+}
+
+void updateModeRapidHeat()
+{ 
+  if (sch.dutyState() == dsOver ||
+      th.triggerState() == tsHigh ||
+      aux.on.current())
+  {
+    mode.autoheat.transition();
+    return;
+  }
+  
   pump.heat.transition();
 }
 
+void exitModeRapidHeat()
+{
+  sch.reset();
+}
+
+// --------------------------------------------------------------------
+
 void enterModeSoak()
 {
+  sch.manual(soakDuration);
+}
+
+void updateModeSoak()
+{
+  if (sch.dutyState() == dsOver)
+  {
+    mode.autoheat.transition();
+    return;
+  }
+  
+  if (th.triggerState() == tsHigh || 
+      aux.on.current())
+  {
+    pump.on.transition();
+    return;
+  }
+  
+  pump.heat.transition();
+}
+
+void exitModeSoak()
+{
+  sch.reset();
 }
 
 // --------------------------------------------------------------------
@@ -558,27 +624,31 @@ void enterPumpError()
   aux.off.immediateTransition();
 
   setPumpRelays(0, 0, 0);
+  sch.stopDutyTimer();
 }
 
 void enterPumpOff()
-{
-  sch.stopDutyTimer();
-  
+{  
   setPumpRelays(1, 0, 0);
+  sch.stopDutyTimer();
 }
 
 void enterPumpOn()
 {
-  sch.startDutyTimer();
-  
   setPumpRelays(1, 1, 0);
+  sch.startDutyTimer();  
 }
 
 void enterPumpHeat()
 {
-  sch.startDutyTimer();
-  
+  if (aux.on.current())
+  {
+    pump.on.immediateTransition();
+    return;
+  }
+      
   setPumpRelays(1, 1, 1);
+  sch.startDutyTimer();
 }
 
 void updatePumpHeat()
@@ -644,8 +714,7 @@ void loop(void)
 
   th.update();
   
-  if (timeStatus() != timeNotSet)
-    sch.update();
+  sch.update();
   
   for (int i = 0; i < _fsm.count; ++i)
     _fsm[i].update();

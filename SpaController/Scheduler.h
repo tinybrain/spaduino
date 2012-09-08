@@ -5,9 +5,6 @@
 #include <Time.h>
 #include <Streaming.h>
 
-enum eMode { mError, mInit, mOff, mAutoheat, mRapidheat, mSoak };
-enum ePump { pError, pOff, pOn, pHeat };
-
 enum eDutyState { dsUnder, dsMet, dsOver };
 
 enum eWeekDay { Sun = 0x02, Mon = 0x04, Tue = 0x08, Wed = 0x10, Thu = 0x20 , Fri = 0x40 , Sat = 0x80 };
@@ -38,31 +35,35 @@ class Scheduler
     , int count
     );
   
-  void print();
+  void printSchedule();
+  void printTimers();
+
+  void reset();
+  void manual(long duration);
 
   ScheduleItem& itemForTime(time_t time);
-  
+    
   void update();  
-  void resetCycle();
+
+  time_t cycleElapsed();
+  time_t dutyElapsed();
   
   void startDutyTimer();
   void stopDutyTimer();
-  void updateDutyTimer();
-  
+
   eDutyState dutyState();
   
 protected:
-  
+
   ScheduleItem *_items;
   int _count;
   
   ScheduleItem *_currentItem;
   
   time_t _cycleStart;
-  time_t _dutyOnMin;
-  time_t _dutyOnMax;
-  time_t _dutyOnLastUpdate;
-  time_t _dutyOnTimer;
+  time_t _dutyStart;
+  time_t _dutyAccum;
+  time_t _manualDuration;
 };
 
 #endif

@@ -10,7 +10,7 @@
 
 typedef void (*ThermalCallback)();
 
-enum eHeatTriggerState { hLow, hHigh };
+enum eHeatTriggerState { tsLow, tsHigh };
 
 class Thermal
 {

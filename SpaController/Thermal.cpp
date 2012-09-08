@@ -8,7 +8,7 @@ Thermal::Thermal(char pin, ThermalCallback callback)
 , _tm(_t0)
 , _dt(0.0f)
 , _sp(20.0f)
-, _ts(hLow)
+, _ts(tsLow)
 , _bus(OneWire(pin))
 , _sensor(DallasTemperature(&_bus)) 
 {
@@ -57,11 +57,11 @@ void Thermal::update()
     _dt = _t0 - _t1;
   }
   
-  if (_ts == hLow && _t0 > _sp)
-    _ts = hHigh;
+  if (_ts == tsLow && _t0 > _sp)
+    _ts = tsHigh;
     
-  if (_ts == hHigh && _t0 < _sp - 1.0)
-    _ts = hLow;
+  if (_ts == tsHigh && _t0 < _sp - 1.0)
+    _ts = tsLow;
   
   _callback();
 }
