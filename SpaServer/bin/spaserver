@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+require_relative '../lib/handlers.rb'
+
+if ARGV.size < 1
+  puts 'Usage: spaserver /dev/cu.your-usbdevice'
+  exit 1
+end
+
+$serial_dev = ARGV.shift
+
+EM::run do
+
+  s = SpaServer.new $serial_dev
+  s.start
+  puts "EventMachine running."
+
+end
