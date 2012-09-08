@@ -1,0 +1,523 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6C0AB6BD15F70E5700829714 /* left_tick.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C0AB6BB15F70E5700829714 /* left_tick.png */; };
+		6C0AB6BE15F70E5700829714 /* right_tick.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C0AB6BC15F70E5700829714 /* right_tick.png */; };
+		6C0AB6C215F7143200829714 /* arrow_down.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C0AB6C015F7143200829714 /* arrow_down.png */; };
+		6C0AB6C315F7143200829714 /* arrow_up.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C0AB6C115F7143200829714 /* arrow_up.png */; };
+		6C3E950E15FACC2C00C516D6 /* libProtocolBuffersTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C3E950D15FACC2C00C516D6 /* libProtocolBuffersTouch.a */; };
+		6C95544915EC8BC700C72620 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95544815EC8BC600C72620 /* UIKit.framework */; };
+		6C95544B15EC8BC700C72620 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95544A15EC8BC700C72620 /* Foundation.framework */; };
+		6C95544D15EC8BC700C72620 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95544C15EC8BC700C72620 /* CoreGraphics.framework */; };
+		6C95545315EC8BC700C72620 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6C95545115EC8BC700C72620 /* InfoPlist.strings */; };
+		6C95545515EC8BC700C72620 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C95545415EC8BC700C72620 /* main.m */; };
+		6C95545915EC8BC700C72620 /* LTAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C95545815EC8BC700C72620 /* LTAppDelegate.m */; };
+		6C95545C15EC8BC700C72620 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C95545A15EC8BC700C72620 /* MainStoryboard.storyboard */; };
+		6C95545F15EC8BC700C72620 /* LTViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C95545E15EC8BC700C72620 /* LTViewController.m */; };
+		6C95546715EC8BC700C72620 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95546615EC8BC700C72620 /* SenTestingKit.framework */; };
+		6C95546815EC8BC700C72620 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95544815EC8BC600C72620 /* UIKit.framework */; };
+		6C95546915EC8BC700C72620 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95544A15EC8BC700C72620 /* Foundation.framework */; };
+		6C95547115EC8BC700C72620 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6C95546F15EC8BC700C72620 /* InfoPlist.strings */; };
+		6C95547415EC8BC700C72620 /* SlimerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C95547315EC8BC700C72620 /* SlimerTests.m */; };
+		6CB2226915FB2F3300F31843 /* Spa.proto in Resources */ = {isa = PBXBuildFile; fileRef = 6CB2226815FB2F3300F31843 /* Spa.proto */; };
+		6CB2227115FB341F00F31843 /* Spa.pb.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB2227015FB341F00F31843 /* Spa.pb.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		6C74358515FAD6F1003BA1C8 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.proto";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${PROJECT_DIR}/Slimer/ProtobufObjc/${INPUT_FILE_BASE}.pb.m",
+				"${PROJECT_DIR}/Slimer/ProtobufObjc/${INPUT_FILE_BASE}.pb.h",
+			);
+			script = "/usr/local/bin/protoc --plugin=/usr/local/bin/protoc-gen-objc \\\n--proto_path=${INPUT_FILE_DIR} \\\n--objc_out=${PROJECT_DIR}/Slimer/ProtobufObjc/ \\\n${INPUT_FILE_PATH}";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXContainerItemProxy section */
+		6C95546A15EC8BC700C72620 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C95543B15EC8BC600C72620 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6C95544315EC8BC600C72620;
+			remoteInfo = Slimer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		6C0AB6BB15F70E5700829714 /* left_tick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left_tick.png; sourceTree = "<group>"; };
+		6C0AB6BC15F70E5700829714 /* right_tick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_tick.png; sourceTree = "<group>"; };
+		6C0AB6C015F7143200829714 /* arrow_down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_down.png; sourceTree = "<group>"; };
+		6C0AB6C115F7143200829714 /* arrow_up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_up.png; sourceTree = "<group>"; };
+		6C3E950D15FACC2C00C516D6 /* libProtocolBuffersTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libProtocolBuffersTouch.a; path = "../../protobuf/protobuf-objc/src/runtime/Build/Products/Release-iphoneos/libProtocolBuffersTouch.a"; sourceTree = "<group>"; };
+		6C95544415EC8BC600C72620 /* Slimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Slimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C95544815EC8BC600C72620 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		6C95544A15EC8BC700C72620 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		6C95544C15EC8BC700C72620 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		6C95545015EC8BC700C72620 /* Slimer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Slimer-Info.plist"; sourceTree = "<group>"; };
+		6C95545215EC8BC700C72620 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6C95545415EC8BC700C72620 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6C95545615EC8BC700C72620 /* Slimer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Slimer-Prefix.pch"; sourceTree = "<group>"; };
+		6C95545715EC8BC700C72620 /* LTAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LTAppDelegate.h; sourceTree = "<group>"; };
+		6C95545815EC8BC700C72620 /* LTAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LTAppDelegate.m; sourceTree = "<group>"; };
+		6C95545B15EC8BC700C72620 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		6C95545D15EC8BC700C72620 /* LTViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LTViewController.h; sourceTree = "<group>"; };
+		6C95545E15EC8BC700C72620 /* LTViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LTViewController.m; sourceTree = "<group>"; };
+		6C95546515EC8BC700C72620 /* SlimerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlimerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C95546615EC8BC700C72620 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		6C95546E15EC8BC700C72620 /* SlimerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SlimerTests-Info.plist"; sourceTree = "<group>"; };
+		6C95547015EC8BC700C72620 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6C95547215EC8BC700C72620 /* SlimerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SlimerTests.h; sourceTree = "<group>"; };
+		6C95547315EC8BC700C72620 /* SlimerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SlimerTests.m; sourceTree = "<group>"; };
+		6CB2226815FB2F3300F31843 /* Spa.proto */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Spa.proto; path = ../SpaServer/proto/Spa.proto; sourceTree = "<group>"; };
+		6CB2226F15FB341F00F31843 /* Spa.pb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spa.pb.h; path = Slimer/ProtobufObjc/Spa.pb.h; sourceTree = "<group>"; };
+		6CB2227015FB341F00F31843 /* Spa.pb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Spa.pb.m; path = Slimer/ProtobufObjc/Spa.pb.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6C95544115EC8BC600C72620 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C3E950E15FACC2C00C516D6 /* libProtocolBuffersTouch.a in Frameworks */,
+				6C95544915EC8BC700C72620 /* UIKit.framework in Frameworks */,
+				6C95544B15EC8BC700C72620 /* Foundation.framework in Frameworks */,
+				6C95544D15EC8BC700C72620 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C95546115EC8BC700C72620 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C95546715EC8BC700C72620 /* SenTestingKit.framework in Frameworks */,
+				6C95546815EC8BC700C72620 /* UIKit.framework in Frameworks */,
+				6C95546915EC8BC700C72620 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6C0AB6BA15F70E5700829714 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				6C0AB6C015F7143200829714 /* arrow_down.png */,
+				6C0AB6C115F7143200829714 /* arrow_up.png */,
+				6C0AB6BB15F70E5700829714 /* left_tick.png */,
+				6C0AB6BC15F70E5700829714 /* right_tick.png */,
+			);
+			name = Images;
+			path = Slimer/Images;
+			sourceTree = "<group>";
+		};
+		6C3E951015FACCC400C516D6 /* Protobuf */ = {
+			isa = PBXGroup;
+			children = (
+				6CB2226815FB2F3300F31843 /* Spa.proto */,
+			);
+			name = Protobuf;
+			sourceTree = "<group>";
+		};
+		6C95543915EC8BC600C72620 = {
+			isa = PBXGroup;
+			children = (
+				6C3E951015FACCC400C516D6 /* Protobuf */,
+				6CB2226D15FB331F00F31843 /* ProtobufObjc */,
+				6C0AB6BA15F70E5700829714 /* Images */,
+				6C95544E15EC8BC700C72620 /* Slimer */,
+				6C95546C15EC8BC700C72620 /* SlimerTests */,
+				6C95544715EC8BC600C72620 /* Frameworks */,
+				6C95544515EC8BC600C72620 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6C95544515EC8BC600C72620 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6C95544415EC8BC600C72620 /* Slimer.app */,
+				6C95546515EC8BC700C72620 /* SlimerTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6C95544715EC8BC600C72620 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6C3E950D15FACC2C00C516D6 /* libProtocolBuffersTouch.a */,
+				6C95544815EC8BC600C72620 /* UIKit.framework */,
+				6C95544A15EC8BC700C72620 /* Foundation.framework */,
+				6C95544C15EC8BC700C72620 /* CoreGraphics.framework */,
+				6C95546615EC8BC700C72620 /* SenTestingKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6C95544E15EC8BC700C72620 /* Slimer */ = {
+			isa = PBXGroup;
+			children = (
+				6C95545715EC8BC700C72620 /* LTAppDelegate.h */,
+				6C95545815EC8BC700C72620 /* LTAppDelegate.m */,
+				6C95545D15EC8BC700C72620 /* LTViewController.h */,
+				6C95545E15EC8BC700C72620 /* LTViewController.m */,
+				6C95545A15EC8BC700C72620 /* MainStoryboard.storyboard */,
+				6C95544F15EC8BC700C72620 /* Supporting Files */,
+			);
+			path = Slimer;
+			sourceTree = "<group>";
+		};
+		6C95544F15EC8BC700C72620 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6C95545015EC8BC700C72620 /* Slimer-Info.plist */,
+				6C95545115EC8BC700C72620 /* InfoPlist.strings */,
+				6C95545415EC8BC700C72620 /* main.m */,
+				6C95545615EC8BC700C72620 /* Slimer-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6C95546C15EC8BC700C72620 /* SlimerTests */ = {
+			isa = PBXGroup;
+			children = (
+				6C95547215EC8BC700C72620 /* SlimerTests.h */,
+				6C95547315EC8BC700C72620 /* SlimerTests.m */,
+				6C95546D15EC8BC700C72620 /* Supporting Files */,
+			);
+			path = SlimerTests;
+			sourceTree = "<group>";
+		};
+		6C95546D15EC8BC700C72620 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				6C95546E15EC8BC700C72620 /* SlimerTests-Info.plist */,
+				6C95546F15EC8BC700C72620 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6CB2226D15FB331F00F31843 /* ProtobufObjc */ = {
+			isa = PBXGroup;
+			children = (
+				6CB2226F15FB341F00F31843 /* Spa.pb.h */,
+				6CB2227015FB341F00F31843 /* Spa.pb.m */,
+			);
+			name = ProtobufObjc;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6C95544315EC8BC600C72620 /* Slimer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6C95547715EC8BC700C72620 /* Build configuration list for PBXNativeTarget "Slimer" */;
+			buildPhases = (
+				6C95544015EC8BC600C72620 /* Sources */,
+				6C95544115EC8BC600C72620 /* Frameworks */,
+				6C95544215EC8BC600C72620 /* Resources */,
+			);
+			buildRules = (
+				6C74358515FAD6F1003BA1C8 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = Slimer;
+			productName = Slimer;
+			productReference = 6C95544415EC8BC600C72620 /* Slimer.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6C95546415EC8BC700C72620 /* SlimerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6C95547A15EC8BC700C72620 /* Build configuration list for PBXNativeTarget "SlimerTests" */;
+			buildPhases = (
+				6C95546015EC8BC700C72620 /* Sources */,
+				6C95546115EC8BC700C72620 /* Frameworks */,
+				6C95546215EC8BC700C72620 /* Resources */,
+				6C95546315EC8BC700C72620 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6C95546B15EC8BC700C72620 /* PBXTargetDependency */,
+			);
+			name = SlimerTests;
+			productName = SlimerTests;
+			productReference = 6C95546515EC8BC700C72620 /* SlimerTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6C95543B15EC8BC600C72620 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = LT;
+				LastUpgradeCheck = 0440;
+				ORGANIZATIONNAME = "Simon Aridis-Lang";
+			};
+			buildConfigurationList = 6C95543E15EC8BC600C72620 /* Build configuration list for PBXProject "Slimer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 6C95543915EC8BC600C72620;
+			productRefGroup = 6C95544515EC8BC600C72620 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6C95544315EC8BC600C72620 /* Slimer */,
+				6C95546415EC8BC700C72620 /* SlimerTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6C95544215EC8BC600C72620 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C95545315EC8BC700C72620 /* InfoPlist.strings in Resources */,
+				6C95545C15EC8BC700C72620 /* MainStoryboard.storyboard in Resources */,
+				6C0AB6BD15F70E5700829714 /* left_tick.png in Resources */,
+				6C0AB6BE15F70E5700829714 /* right_tick.png in Resources */,
+				6C0AB6C215F7143200829714 /* arrow_down.png in Resources */,
+				6C0AB6C315F7143200829714 /* arrow_up.png in Resources */,
+				6CB2226915FB2F3300F31843 /* Spa.proto in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C95546215EC8BC700C72620 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C95547115EC8BC700C72620 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6C95546315EC8BC700C72620 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6C95544015EC8BC600C72620 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C95545515EC8BC700C72620 /* main.m in Sources */,
+				6C95545915EC8BC700C72620 /* LTAppDelegate.m in Sources */,
+				6C95545F15EC8BC700C72620 /* LTViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C95546015EC8BC700C72620 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C95547415EC8BC700C72620 /* SlimerTests.m in Sources */,
+				6CB2227115FB341F00F31843 /* Spa.pb.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6C95546B15EC8BC700C72620 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6C95544315EC8BC600C72620 /* Slimer */;
+			targetProxy = 6C95546A15EC8BC700C72620 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		6C95545115EC8BC700C72620 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6C95545215EC8BC700C72620 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		6C95545A15EC8BC700C72620 /* MainStoryboard.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6C95545B15EC8BC700C72620 /* en */,
+			);
+			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+		6C95546F15EC8BC700C72620 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6C95547015EC8BC700C72620 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		6C95547515EC8BC700C72620 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "/opt/protobuf-ios/include/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		6C95547615EC8BC700C72620 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "/opt/protobuf-ios/include/**";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		6C95547815EC8BC700C72620 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Slimer/Slimer-Prefix.pch";
+				INFOPLIST_FILE = "Slimer/Slimer-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		6C95547915EC8BC700C72620 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Slimer/Slimer-Prefix.pch";
+				INFOPLIST_FILE = "Slimer/Slimer-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		6C95547B15EC8BC700C72620 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Slimer.app/Slimer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Slimer/Slimer-Prefix.pch";
+				INFOPLIST_FILE = "SlimerTests/SlimerTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		6C95547C15EC8BC700C72620 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Slimer.app/Slimer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Slimer/Slimer-Prefix.pch";
+				INFOPLIST_FILE = "SlimerTests/SlimerTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6C95543E15EC8BC600C72620 /* Build configuration list for PBXProject "Slimer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C95547515EC8BC700C72620 /* Debug */,
+				6C95547615EC8BC700C72620 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6C95547715EC8BC700C72620 /* Build configuration list for PBXNativeTarget "Slimer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C95547815EC8BC700C72620 /* Debug */,
+				6C95547915EC8BC700C72620 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6C95547A15EC8BC700C72620 /* Build configuration list for PBXNativeTarget "SlimerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6C95547B15EC8BC700C72620 /* Debug */,
+				6C95547C15EC8BC700C72620 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 6C95543B15EC8BC600C72620 /* Project object */;
+}
