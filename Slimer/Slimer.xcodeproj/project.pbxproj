@@ -26,7 +26,7 @@
 		6C95547115EC8BC700C72620 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6C95546F15EC8BC700C72620 /* InfoPlist.strings */; };
 		6C95547415EC8BC700C72620 /* SlimerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6C95547315EC8BC700C72620 /* SlimerTests.m */; };
 		6CB2226915FB2F3300F31843 /* Spa.proto in Resources */ = {isa = PBXBuildFile; fileRef = 6CB2226815FB2F3300F31843 /* Spa.proto */; };
-		6CB2227115FB341F00F31843 /* Spa.pb.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB2227015FB341F00F31843 /* Spa.pb.m */; };
+		6CB2227215FB8F5200F31843 /* Spa.pb.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CB2227015FB341F00F31843 /* Spa.pb.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -332,6 +332,7 @@
 				6C95545515EC8BC700C72620 /* main.m in Sources */,
 				6C95545915EC8BC700C72620 /* LTAppDelegate.m in Sources */,
 				6C95545F15EC8BC700C72620 /* LTViewController.m in Sources */,
+				6CB2227215FB8F5200F31843 /* Spa.pb.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +341,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C95547415EC8BC700C72620 /* SlimerTests.m in Sources */,
-				6CB2227115FB341F00F31843 /* Spa.pb.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

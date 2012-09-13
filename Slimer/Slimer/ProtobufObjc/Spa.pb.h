@@ -2,6 +2,14 @@
 
 #import <ProtocolBuffers/ProtocolBuffers.h>
 
+@class Relays;
+@class Relays_Builder;
+@class ScheduleTimers;
+@class ScheduleTimers_Builder;
+@class SpaMessage;
+@class SpaMessage_Builder;
+@class States;
+@class States_Builder;
 @class Temperature;
 @class Temperature_Builder;
 #ifndef __has_feature
@@ -16,11 +24,261 @@
   #endif
 #endif
 
+typedef enum {
+  States_AuxAOff = 0,
+  States_AuxAOn = 1,
+  States_AuxANone = 100,
+} States_Aux;
+
+BOOL States_AuxIsValidValue(States_Aux value);
+
+typedef enum {
+  States_PumpPError = 0,
+  States_PumpPOff = 1,
+  States_PumpPOn = 2,
+  States_PumpPHeat = 3,
+  States_PumpPNone = 100,
+} States_Pump;
+
+BOOL States_PumpIsValidValue(States_Pump value);
+
+typedef enum {
+  States_ModeMError = 0,
+  States_ModeMInit = 1,
+  States_ModeMOff = 2,
+  States_ModeMAuto = 3,
+  States_ModeMRapid = 4,
+  States_ModeMSoak = 5,
+  States_ModeMNone = 100,
+} States_Mode;
+
+BOOL States_ModeIsValidValue(States_Mode value);
+
+typedef enum {
+  States_StatusEOk = 0,
+  States_StatusEUnknown = 1,
+  States_StatusETemperatureSensor = 2,
+  States_StatusEWaterLevelSensor = 3,
+  States_StatusEHighLimit = 4,
+} States_Status;
+
+BOOL States_StatusIsValidValue(States_Status value);
+
 
 @interface SpaRoot : NSObject {
 }
 + (PBExtensionRegistry*) extensionRegistry;
 + (void) registerAllExtensions:(PBMutableExtensionRegistry*) registry;
+@end
+
+@interface SpaMessage : PBGeneratedMessage {
+@private
+  BOOL hasClassName_:1;
+  BOOL hasMessage_:1;
+  NSString* className;
+  NSData* message;
+}
+- (BOOL) hasClassName;
+- (BOOL) hasMessage;
+@property (readonly, strong) NSString* className;
+@property (readonly, strong) NSData* message;
+
++ (SpaMessage*) defaultInstance;
+- (SpaMessage*) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (SpaMessage_Builder*) builder;
++ (SpaMessage_Builder*) builder;
++ (SpaMessage_Builder*) builderWithPrototype:(SpaMessage*) prototype;
+- (SpaMessage_Builder*) toBuilder;
+
++ (SpaMessage*) parseFromData:(NSData*) data;
++ (SpaMessage*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (SpaMessage*) parseFromInputStream:(NSInputStream*) input;
++ (SpaMessage*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (SpaMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (SpaMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface SpaMessage_Builder : PBGeneratedMessage_Builder {
+@private
+  SpaMessage* result;
+}
+
+- (SpaMessage*) defaultInstance;
+
+- (SpaMessage_Builder*) clear;
+- (SpaMessage_Builder*) clone;
+
+- (SpaMessage*) build;
+- (SpaMessage*) buildPartial;
+
+- (SpaMessage_Builder*) mergeFrom:(SpaMessage*) other;
+- (SpaMessage_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (SpaMessage_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasClassName;
+- (NSString*) className;
+- (SpaMessage_Builder*) setClassName:(NSString*) value;
+- (SpaMessage_Builder*) clearClassName;
+
+- (BOOL) hasMessage;
+- (NSData*) message;
+- (SpaMessage_Builder*) setMessage:(NSData*) value;
+- (SpaMessage_Builder*) clearMessage;
+@end
+
+@interface States : PBGeneratedMessage {
+@private
+  BOOL hasAux_:1;
+  BOOL hasPump_:1;
+  BOOL hasMode_:1;
+  BOOL hasStatus_:1;
+  int32_t aux;
+  int32_t pump;
+  int32_t mode;
+  int32_t status;
+}
+- (BOOL) hasAux;
+- (BOOL) hasPump;
+- (BOOL) hasMode;
+- (BOOL) hasStatus;
+@property (readonly) int32_t aux;
+@property (readonly) int32_t pump;
+@property (readonly) int32_t mode;
+@property (readonly) int32_t status;
+
++ (States*) defaultInstance;
+- (States*) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (States_Builder*) builder;
++ (States_Builder*) builder;
++ (States_Builder*) builderWithPrototype:(States*) prototype;
+- (States_Builder*) toBuilder;
+
++ (States*) parseFromData:(NSData*) data;
++ (States*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (States*) parseFromInputStream:(NSInputStream*) input;
++ (States*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (States*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (States*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface States_Builder : PBGeneratedMessage_Builder {
+@private
+  States* result;
+}
+
+- (States*) defaultInstance;
+
+- (States_Builder*) clear;
+- (States_Builder*) clone;
+
+- (States*) build;
+- (States*) buildPartial;
+
+- (States_Builder*) mergeFrom:(States*) other;
+- (States_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (States_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasAux;
+- (int32_t) aux;
+- (States_Builder*) setAux:(int32_t) value;
+- (States_Builder*) clearAux;
+
+- (BOOL) hasPump;
+- (int32_t) pump;
+- (States_Builder*) setPump:(int32_t) value;
+- (States_Builder*) clearPump;
+
+- (BOOL) hasMode;
+- (int32_t) mode;
+- (States_Builder*) setMode:(int32_t) value;
+- (States_Builder*) clearMode;
+
+- (BOOL) hasStatus;
+- (int32_t) status;
+- (States_Builder*) setStatus:(int32_t) value;
+- (States_Builder*) clearStatus;
+@end
+
+@interface Relays : PBGeneratedMessage {
+@private
+  BOOL hasSafety_:1;
+  BOOL hasPump_:1;
+  BOOL hasHeat_:1;
+  BOOL hasAux_:1;
+  BOOL safety_:1;
+  BOOL pump_:1;
+  BOOL heat_:1;
+  BOOL aux_:1;
+}
+- (BOOL) hasSafety;
+- (BOOL) hasPump;
+- (BOOL) hasHeat;
+- (BOOL) hasAux;
+- (BOOL) safety;
+- (BOOL) pump;
+- (BOOL) heat;
+- (BOOL) aux;
+
++ (Relays*) defaultInstance;
+- (Relays*) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (Relays_Builder*) builder;
++ (Relays_Builder*) builder;
++ (Relays_Builder*) builderWithPrototype:(Relays*) prototype;
+- (Relays_Builder*) toBuilder;
+
++ (Relays*) parseFromData:(NSData*) data;
++ (Relays*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (Relays*) parseFromInputStream:(NSInputStream*) input;
++ (Relays*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (Relays*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (Relays*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface Relays_Builder : PBGeneratedMessage_Builder {
+@private
+  Relays* result;
+}
+
+- (Relays*) defaultInstance;
+
+- (Relays_Builder*) clear;
+- (Relays_Builder*) clone;
+
+- (Relays*) build;
+- (Relays*) buildPartial;
+
+- (Relays_Builder*) mergeFrom:(Relays*) other;
+- (Relays_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (Relays_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasSafety;
+- (BOOL) safety;
+- (Relays_Builder*) setSafety:(BOOL) value;
+- (Relays_Builder*) clearSafety;
+
+- (BOOL) hasPump;
+- (BOOL) pump;
+- (Relays_Builder*) setPump:(BOOL) value;
+- (Relays_Builder*) clearPump;
+
+- (BOOL) hasHeat;
+- (BOOL) heat;
+- (Relays_Builder*) setHeat:(BOOL) value;
+- (Relays_Builder*) clearHeat;
+
+- (BOOL) hasAux;
+- (BOOL) aux;
+- (Relays_Builder*) setAux:(BOOL) value;
+- (Relays_Builder*) clearAux;
 @end
 
 @interface Temperature : PBGeneratedMessage {
@@ -97,5 +355,108 @@
 - (int32_t) triggerState;
 - (Temperature_Builder*) setTriggerState:(int32_t) value;
 - (Temperature_Builder*) clearTriggerState;
+@end
+
+@interface ScheduleTimers : PBGeneratedMessage {
+@private
+  BOOL hasCycleStart_:1;
+  BOOL hasPeriod_:1;
+  BOOL hasMinDuty_:1;
+  BOOL hasMaxDuty_:1;
+  BOOL hasManualDuration_:1;
+  BOOL hasCycleElapsed_:1;
+  BOOL hasDutyElapsed_:1;
+  uint64_t cycleStart;
+  uint32_t period;
+  uint32_t minDuty;
+  uint32_t maxDuty;
+  uint32_t manualDuration;
+  uint32_t cycleElapsed;
+  uint32_t dutyElapsed;
+}
+- (BOOL) hasPeriod;
+- (BOOL) hasMinDuty;
+- (BOOL) hasMaxDuty;
+- (BOOL) hasCycleStart;
+- (BOOL) hasManualDuration;
+- (BOOL) hasCycleElapsed;
+- (BOOL) hasDutyElapsed;
+@property (readonly) uint32_t period;
+@property (readonly) uint32_t minDuty;
+@property (readonly) uint32_t maxDuty;
+@property (readonly) uint64_t cycleStart;
+@property (readonly) uint32_t manualDuration;
+@property (readonly) uint32_t cycleElapsed;
+@property (readonly) uint32_t dutyElapsed;
+
++ (ScheduleTimers*) defaultInstance;
+- (ScheduleTimers*) defaultInstance;
+
+- (BOOL) isInitialized;
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output;
+- (ScheduleTimers_Builder*) builder;
++ (ScheduleTimers_Builder*) builder;
++ (ScheduleTimers_Builder*) builderWithPrototype:(ScheduleTimers*) prototype;
+- (ScheduleTimers_Builder*) toBuilder;
+
++ (ScheduleTimers*) parseFromData:(NSData*) data;
++ (ScheduleTimers*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ScheduleTimers*) parseFromInputStream:(NSInputStream*) input;
++ (ScheduleTimers*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
++ (ScheduleTimers*) parseFromCodedInputStream:(PBCodedInputStream*) input;
++ (ScheduleTimers*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+@end
+
+@interface ScheduleTimers_Builder : PBGeneratedMessage_Builder {
+@private
+  ScheduleTimers* result;
+}
+
+- (ScheduleTimers*) defaultInstance;
+
+- (ScheduleTimers_Builder*) clear;
+- (ScheduleTimers_Builder*) clone;
+
+- (ScheduleTimers*) build;
+- (ScheduleTimers*) buildPartial;
+
+- (ScheduleTimers_Builder*) mergeFrom:(ScheduleTimers*) other;
+- (ScheduleTimers_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input;
+- (ScheduleTimers_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry;
+
+- (BOOL) hasPeriod;
+- (uint32_t) period;
+- (ScheduleTimers_Builder*) setPeriod:(uint32_t) value;
+- (ScheduleTimers_Builder*) clearPeriod;
+
+- (BOOL) hasMinDuty;
+- (uint32_t) minDuty;
+- (ScheduleTimers_Builder*) setMinDuty:(uint32_t) value;
+- (ScheduleTimers_Builder*) clearMinDuty;
+
+- (BOOL) hasMaxDuty;
+- (uint32_t) maxDuty;
+- (ScheduleTimers_Builder*) setMaxDuty:(uint32_t) value;
+- (ScheduleTimers_Builder*) clearMaxDuty;
+
+- (BOOL) hasCycleStart;
+- (uint64_t) cycleStart;
+- (ScheduleTimers_Builder*) setCycleStart:(uint64_t) value;
+- (ScheduleTimers_Builder*) clearCycleStart;
+
+- (BOOL) hasManualDuration;
+- (uint32_t) manualDuration;
+- (ScheduleTimers_Builder*) setManualDuration:(uint32_t) value;
+- (ScheduleTimers_Builder*) clearManualDuration;
+
+- (BOOL) hasCycleElapsed;
+- (uint32_t) cycleElapsed;
+- (ScheduleTimers_Builder*) setCycleElapsed:(uint32_t) value;
+- (ScheduleTimers_Builder*) clearCycleElapsed;
+
+- (BOOL) hasDutyElapsed;
+- (uint32_t) dutyElapsed;
+- (ScheduleTimers_Builder*) setDutyElapsed:(uint32_t) value;
+- (ScheduleTimers_Builder*) clearDutyElapsed;
 @end
 

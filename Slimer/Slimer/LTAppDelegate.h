@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LTViewController.h"
 
 @interface LTAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, retain) LTViewController *viewController;
 
 @end

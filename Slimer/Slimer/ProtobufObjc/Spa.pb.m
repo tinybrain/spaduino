@@ -19,6 +19,1023 @@ static PBExtensionRegistry* extensionRegistry = nil;
 }
 @end
 
+@interface SpaMessage ()
+@property (strong) NSString* className;
+@property (strong) NSData* message;
+@end
+
+@implementation SpaMessage
+
+- (BOOL) hasClassName {
+  return !!hasClassName_;
+}
+- (void) setHasClassName:(BOOL) value_ {
+  hasClassName_ = !!value_;
+}
+@synthesize className;
+- (BOOL) hasMessage {
+  return !!hasMessage_;
+}
+- (void) setHasMessage:(BOOL) value_ {
+  hasMessage_ = !!value_;
+}
+@synthesize message;
+- (id) init {
+  if ((self = [super init])) {
+    self.className = @"";
+    self.message = [NSData data];
+  }
+  return self;
+}
+static SpaMessage* defaultSpaMessageInstance = nil;
++ (void) initialize {
+  if (self == [SpaMessage class]) {
+    defaultSpaMessageInstance = [[SpaMessage alloc] init];
+  }
+}
++ (SpaMessage*) defaultInstance {
+  return defaultSpaMessageInstance;
+}
+- (SpaMessage*) defaultInstance {
+  return defaultSpaMessageInstance;
+}
+- (BOOL) isInitialized {
+  if (!self.hasClassName) {
+    return NO;
+  }
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasClassName) {
+    [output writeString:1 value:self.className];
+  }
+  if (self.hasMessage) {
+    [output writeData:2 value:self.message];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (int32_t) serializedSize {
+  int32_t size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasClassName) {
+    size_ += computeStringSize(1, self.className);
+  }
+  if (self.hasMessage) {
+    size_ += computeDataSize(2, self.message);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (SpaMessage*) parseFromData:(NSData*) data {
+  return (SpaMessage*)[[[SpaMessage builder] mergeFromData:data] build];
+}
++ (SpaMessage*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (SpaMessage*)[[[SpaMessage builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (SpaMessage*) parseFromInputStream:(NSInputStream*) input {
+  return (SpaMessage*)[[[SpaMessage builder] mergeFromInputStream:input] build];
+}
++ (SpaMessage*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (SpaMessage*)[[[SpaMessage builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (SpaMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (SpaMessage*)[[[SpaMessage builder] mergeFromCodedInputStream:input] build];
+}
++ (SpaMessage*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (SpaMessage*)[[[SpaMessage builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (SpaMessage_Builder*) builder {
+  return [[SpaMessage_Builder alloc] init];
+}
++ (SpaMessage_Builder*) builderWithPrototype:(SpaMessage*) prototype {
+  return [[SpaMessage builder] mergeFrom:prototype];
+}
+- (SpaMessage_Builder*) builder {
+  return [SpaMessage builder];
+}
+- (SpaMessage_Builder*) toBuilder {
+  return [SpaMessage builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasClassName) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"className", self.className];
+  }
+  if (self.hasMessage) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"message", self.message];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[SpaMessage class]]) {
+    return NO;
+  }
+  SpaMessage *otherMessage = other;
+  return
+      self.hasClassName == otherMessage.hasClassName &&
+      (!self.hasClassName || [self.className isEqual:otherMessage.className]) &&
+      self.hasMessage == otherMessage.hasMessage &&
+      (!self.hasMessage || [self.message isEqual:otherMessage.message]) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  NSUInteger hashCode = 7;
+  if (self.hasClassName) {
+    hashCode = hashCode * 31 + [self.className hash];
+  }
+  if (self.hasMessage) {
+    hashCode = hashCode * 31 + [self.message hash];
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+@interface SpaMessage_Builder()
+@property (strong) SpaMessage* result;
+@end
+
+@implementation SpaMessage_Builder
+@synthesize result;
+- (id) init {
+  if ((self = [super init])) {
+    self.result = [[SpaMessage alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return result;
+}
+- (SpaMessage_Builder*) clear {
+  self.result = [[SpaMessage alloc] init];
+  return self;
+}
+- (SpaMessage_Builder*) clone {
+  return [SpaMessage builderWithPrototype:result];
+}
+- (SpaMessage*) defaultInstance {
+  return [SpaMessage defaultInstance];
+}
+- (SpaMessage*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (SpaMessage*) buildPartial {
+  SpaMessage* returnMe = result;
+  self.result = nil;
+  return returnMe;
+}
+- (SpaMessage_Builder*) mergeFrom:(SpaMessage*) other {
+  if (other == [SpaMessage defaultInstance]) {
+    return self;
+  }
+  if (other.hasClassName) {
+    [self setClassName:other.className];
+  }
+  if (other.hasMessage) {
+    [self setMessage:other.message];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (SpaMessage_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (SpaMessage_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSet_Builder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    int32_t tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 10: {
+        [self setClassName:[input readString]];
+        break;
+      }
+      case 18: {
+        [self setMessage:[input readData]];
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasClassName {
+  return result.hasClassName;
+}
+- (NSString*) className {
+  return result.className;
+}
+- (SpaMessage_Builder*) setClassName:(NSString*) value {
+  result.hasClassName = YES;
+  result.className = value;
+  return self;
+}
+- (SpaMessage_Builder*) clearClassName {
+  result.hasClassName = NO;
+  result.className = @"";
+  return self;
+}
+- (BOOL) hasMessage {
+  return result.hasMessage;
+}
+- (NSData*) message {
+  return result.message;
+}
+- (SpaMessage_Builder*) setMessage:(NSData*) value {
+  result.hasMessage = YES;
+  result.message = value;
+  return self;
+}
+- (SpaMessage_Builder*) clearMessage {
+  result.hasMessage = NO;
+  result.message = [NSData data];
+  return self;
+}
+@end
+
+@interface States ()
+@property int32_t aux;
+@property int32_t pump;
+@property int32_t mode;
+@property int32_t status;
+@end
+
+@implementation States
+
+- (BOOL) hasAux {
+  return !!hasAux_;
+}
+- (void) setHasAux:(BOOL) value_ {
+  hasAux_ = !!value_;
+}
+@synthesize aux;
+- (BOOL) hasPump {
+  return !!hasPump_;
+}
+- (void) setHasPump:(BOOL) value_ {
+  hasPump_ = !!value_;
+}
+@synthesize pump;
+- (BOOL) hasMode {
+  return !!hasMode_;
+}
+- (void) setHasMode:(BOOL) value_ {
+  hasMode_ = !!value_;
+}
+@synthesize mode;
+- (BOOL) hasStatus {
+  return !!hasStatus_;
+}
+- (void) setHasStatus:(BOOL) value_ {
+  hasStatus_ = !!value_;
+}
+@synthesize status;
+- (id) init {
+  if ((self = [super init])) {
+    self.aux = 100;
+    self.pump = 100;
+    self.mode = 100;
+    self.status = 0;
+  }
+  return self;
+}
+static States* defaultStatesInstance = nil;
++ (void) initialize {
+  if (self == [States class]) {
+    defaultStatesInstance = [[States alloc] init];
+  }
+}
++ (States*) defaultInstance {
+  return defaultStatesInstance;
+}
+- (States*) defaultInstance {
+  return defaultStatesInstance;
+}
+- (BOOL) isInitialized {
+  if (!self.hasAux) {
+    return NO;
+  }
+  if (!self.hasPump) {
+    return NO;
+  }
+  if (!self.hasMode) {
+    return NO;
+  }
+  if (!self.hasStatus) {
+    return NO;
+  }
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasAux) {
+    [output writeInt32:1 value:self.aux];
+  }
+  if (self.hasPump) {
+    [output writeInt32:2 value:self.pump];
+  }
+  if (self.hasMode) {
+    [output writeInt32:3 value:self.mode];
+  }
+  if (self.hasStatus) {
+    [output writeInt32:4 value:self.status];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (int32_t) serializedSize {
+  int32_t size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasAux) {
+    size_ += computeInt32Size(1, self.aux);
+  }
+  if (self.hasPump) {
+    size_ += computeInt32Size(2, self.pump);
+  }
+  if (self.hasMode) {
+    size_ += computeInt32Size(3, self.mode);
+  }
+  if (self.hasStatus) {
+    size_ += computeInt32Size(4, self.status);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (States*) parseFromData:(NSData*) data {
+  return (States*)[[[States builder] mergeFromData:data] build];
+}
++ (States*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (States*)[[[States builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (States*) parseFromInputStream:(NSInputStream*) input {
+  return (States*)[[[States builder] mergeFromInputStream:input] build];
+}
++ (States*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (States*)[[[States builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (States*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (States*)[[[States builder] mergeFromCodedInputStream:input] build];
+}
++ (States*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (States*)[[[States builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (States_Builder*) builder {
+  return [[States_Builder alloc] init];
+}
++ (States_Builder*) builderWithPrototype:(States*) prototype {
+  return [[States builder] mergeFrom:prototype];
+}
+- (States_Builder*) builder {
+  return [States builder];
+}
+- (States_Builder*) toBuilder {
+  return [States builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasAux) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"aux", [NSNumber numberWithInt:self.aux]];
+  }
+  if (self.hasPump) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"pump", [NSNumber numberWithInt:self.pump]];
+  }
+  if (self.hasMode) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"mode", [NSNumber numberWithInt:self.mode]];
+  }
+  if (self.hasStatus) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"status", [NSNumber numberWithInt:self.status]];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[States class]]) {
+    return NO;
+  }
+  States *otherMessage = other;
+  return
+      self.hasAux == otherMessage.hasAux &&
+      (!self.hasAux || self.aux == otherMessage.aux) &&
+      self.hasPump == otherMessage.hasPump &&
+      (!self.hasPump || self.pump == otherMessage.pump) &&
+      self.hasMode == otherMessage.hasMode &&
+      (!self.hasMode || self.mode == otherMessage.mode) &&
+      self.hasStatus == otherMessage.hasStatus &&
+      (!self.hasStatus || self.status == otherMessage.status) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  NSUInteger hashCode = 7;
+  if (self.hasAux) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.aux] hash];
+  }
+  if (self.hasPump) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.pump] hash];
+  }
+  if (self.hasMode) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.mode] hash];
+  }
+  if (self.hasStatus) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.status] hash];
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+BOOL States_AuxIsValidValue(States_Aux value) {
+  switch (value) {
+    case States_AuxAOff:
+    case States_AuxAOn:
+    case States_AuxANone:
+      return YES;
+    default:
+      return NO;
+  }
+}
+BOOL States_PumpIsValidValue(States_Pump value) {
+  switch (value) {
+    case States_PumpPError:
+    case States_PumpPOff:
+    case States_PumpPOn:
+    case States_PumpPHeat:
+    case States_PumpPNone:
+      return YES;
+    default:
+      return NO;
+  }
+}
+BOOL States_ModeIsValidValue(States_Mode value) {
+  switch (value) {
+    case States_ModeMError:
+    case States_ModeMInit:
+    case States_ModeMOff:
+    case States_ModeMAuto:
+    case States_ModeMRapid:
+    case States_ModeMSoak:
+    case States_ModeMNone:
+      return YES;
+    default:
+      return NO;
+  }
+}
+BOOL States_StatusIsValidValue(States_Status value) {
+  switch (value) {
+    case States_StatusEOk:
+    case States_StatusEUnknown:
+    case States_StatusETemperatureSensor:
+    case States_StatusEWaterLevelSensor:
+    case States_StatusEHighLimit:
+      return YES;
+    default:
+      return NO;
+  }
+}
+@interface States_Builder()
+@property (strong) States* result;
+@end
+
+@implementation States_Builder
+@synthesize result;
+- (id) init {
+  if ((self = [super init])) {
+    self.result = [[States alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return result;
+}
+- (States_Builder*) clear {
+  self.result = [[States alloc] init];
+  return self;
+}
+- (States_Builder*) clone {
+  return [States builderWithPrototype:result];
+}
+- (States*) defaultInstance {
+  return [States defaultInstance];
+}
+- (States*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (States*) buildPartial {
+  States* returnMe = result;
+  self.result = nil;
+  return returnMe;
+}
+- (States_Builder*) mergeFrom:(States*) other {
+  if (other == [States defaultInstance]) {
+    return self;
+  }
+  if (other.hasAux) {
+    [self setAux:other.aux];
+  }
+  if (other.hasPump) {
+    [self setPump:other.pump];
+  }
+  if (other.hasMode) {
+    [self setMode:other.mode];
+  }
+  if (other.hasStatus) {
+    [self setStatus:other.status];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (States_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (States_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSet_Builder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    int32_t tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 8: {
+        [self setAux:[input readInt32]];
+        break;
+      }
+      case 16: {
+        [self setPump:[input readInt32]];
+        break;
+      }
+      case 24: {
+        [self setMode:[input readInt32]];
+        break;
+      }
+      case 32: {
+        [self setStatus:[input readInt32]];
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasAux {
+  return result.hasAux;
+}
+- (int32_t) aux {
+  return result.aux;
+}
+- (States_Builder*) setAux:(int32_t) value {
+  result.hasAux = YES;
+  result.aux = value;
+  return self;
+}
+- (States_Builder*) clearAux {
+  result.hasAux = NO;
+  result.aux = 100;
+  return self;
+}
+- (BOOL) hasPump {
+  return result.hasPump;
+}
+- (int32_t) pump {
+  return result.pump;
+}
+- (States_Builder*) setPump:(int32_t) value {
+  result.hasPump = YES;
+  result.pump = value;
+  return self;
+}
+- (States_Builder*) clearPump {
+  result.hasPump = NO;
+  result.pump = 100;
+  return self;
+}
+- (BOOL) hasMode {
+  return result.hasMode;
+}
+- (int32_t) mode {
+  return result.mode;
+}
+- (States_Builder*) setMode:(int32_t) value {
+  result.hasMode = YES;
+  result.mode = value;
+  return self;
+}
+- (States_Builder*) clearMode {
+  result.hasMode = NO;
+  result.mode = 100;
+  return self;
+}
+- (BOOL) hasStatus {
+  return result.hasStatus;
+}
+- (int32_t) status {
+  return result.status;
+}
+- (States_Builder*) setStatus:(int32_t) value {
+  result.hasStatus = YES;
+  result.status = value;
+  return self;
+}
+- (States_Builder*) clearStatus {
+  result.hasStatus = NO;
+  result.status = 0;
+  return self;
+}
+@end
+
+@interface Relays ()
+@property BOOL safety;
+@property BOOL pump;
+@property BOOL heat;
+@property BOOL aux;
+@end
+
+@implementation Relays
+
+- (BOOL) hasSafety {
+  return !!hasSafety_;
+}
+- (void) setHasSafety:(BOOL) value_ {
+  hasSafety_ = !!value_;
+}
+- (BOOL) safety {
+  return !!safety_;
+}
+- (void) setSafety:(BOOL) value_ {
+  safety_ = !!value_;
+}
+- (BOOL) hasPump {
+  return !!hasPump_;
+}
+- (void) setHasPump:(BOOL) value_ {
+  hasPump_ = !!value_;
+}
+- (BOOL) pump {
+  return !!pump_;
+}
+- (void) setPump:(BOOL) value_ {
+  pump_ = !!value_;
+}
+- (BOOL) hasHeat {
+  return !!hasHeat_;
+}
+- (void) setHasHeat:(BOOL) value_ {
+  hasHeat_ = !!value_;
+}
+- (BOOL) heat {
+  return !!heat_;
+}
+- (void) setHeat:(BOOL) value_ {
+  heat_ = !!value_;
+}
+- (BOOL) hasAux {
+  return !!hasAux_;
+}
+- (void) setHasAux:(BOOL) value_ {
+  hasAux_ = !!value_;
+}
+- (BOOL) aux {
+  return !!aux_;
+}
+- (void) setAux:(BOOL) value_ {
+  aux_ = !!value_;
+}
+- (id) init {
+  if ((self = [super init])) {
+    self.safety = NO;
+    self.pump = NO;
+    self.heat = NO;
+    self.aux = NO;
+  }
+  return self;
+}
+static Relays* defaultRelaysInstance = nil;
++ (void) initialize {
+  if (self == [Relays class]) {
+    defaultRelaysInstance = [[Relays alloc] init];
+  }
+}
++ (Relays*) defaultInstance {
+  return defaultRelaysInstance;
+}
+- (Relays*) defaultInstance {
+  return defaultRelaysInstance;
+}
+- (BOOL) isInitialized {
+  if (!self.hasSafety) {
+    return NO;
+  }
+  if (!self.hasPump) {
+    return NO;
+  }
+  if (!self.hasHeat) {
+    return NO;
+  }
+  if (!self.hasAux) {
+    return NO;
+  }
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasSafety) {
+    [output writeBool:1 value:self.safety];
+  }
+  if (self.hasPump) {
+    [output writeBool:2 value:self.pump];
+  }
+  if (self.hasHeat) {
+    [output writeBool:3 value:self.heat];
+  }
+  if (self.hasAux) {
+    [output writeBool:4 value:self.aux];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (int32_t) serializedSize {
+  int32_t size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasSafety) {
+    size_ += computeBoolSize(1, self.safety);
+  }
+  if (self.hasPump) {
+    size_ += computeBoolSize(2, self.pump);
+  }
+  if (self.hasHeat) {
+    size_ += computeBoolSize(3, self.heat);
+  }
+  if (self.hasAux) {
+    size_ += computeBoolSize(4, self.aux);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (Relays*) parseFromData:(NSData*) data {
+  return (Relays*)[[[Relays builder] mergeFromData:data] build];
+}
++ (Relays*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (Relays*)[[[Relays builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (Relays*) parseFromInputStream:(NSInputStream*) input {
+  return (Relays*)[[[Relays builder] mergeFromInputStream:input] build];
+}
++ (Relays*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (Relays*)[[[Relays builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (Relays*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (Relays*)[[[Relays builder] mergeFromCodedInputStream:input] build];
+}
++ (Relays*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (Relays*)[[[Relays builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (Relays_Builder*) builder {
+  return [[Relays_Builder alloc] init];
+}
++ (Relays_Builder*) builderWithPrototype:(Relays*) prototype {
+  return [[Relays builder] mergeFrom:prototype];
+}
+- (Relays_Builder*) builder {
+  return [Relays builder];
+}
+- (Relays_Builder*) toBuilder {
+  return [Relays builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasSafety) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"safety", [NSNumber numberWithBool:self.safety]];
+  }
+  if (self.hasPump) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"pump", [NSNumber numberWithBool:self.pump]];
+  }
+  if (self.hasHeat) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"heat", [NSNumber numberWithBool:self.heat]];
+  }
+  if (self.hasAux) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"aux", [NSNumber numberWithBool:self.aux]];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[Relays class]]) {
+    return NO;
+  }
+  Relays *otherMessage = other;
+  return
+      self.hasSafety == otherMessage.hasSafety &&
+      (!self.hasSafety || self.safety == otherMessage.safety) &&
+      self.hasPump == otherMessage.hasPump &&
+      (!self.hasPump || self.pump == otherMessage.pump) &&
+      self.hasHeat == otherMessage.hasHeat &&
+      (!self.hasHeat || self.heat == otherMessage.heat) &&
+      self.hasAux == otherMessage.hasAux &&
+      (!self.hasAux || self.aux == otherMessage.aux) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  NSUInteger hashCode = 7;
+  if (self.hasSafety) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithBool:self.safety] hash];
+  }
+  if (self.hasPump) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithBool:self.pump] hash];
+  }
+  if (self.hasHeat) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithBool:self.heat] hash];
+  }
+  if (self.hasAux) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithBool:self.aux] hash];
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+@interface Relays_Builder()
+@property (strong) Relays* result;
+@end
+
+@implementation Relays_Builder
+@synthesize result;
+- (id) init {
+  if ((self = [super init])) {
+    self.result = [[Relays alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return result;
+}
+- (Relays_Builder*) clear {
+  self.result = [[Relays alloc] init];
+  return self;
+}
+- (Relays_Builder*) clone {
+  return [Relays builderWithPrototype:result];
+}
+- (Relays*) defaultInstance {
+  return [Relays defaultInstance];
+}
+- (Relays*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (Relays*) buildPartial {
+  Relays* returnMe = result;
+  self.result = nil;
+  return returnMe;
+}
+- (Relays_Builder*) mergeFrom:(Relays*) other {
+  if (other == [Relays defaultInstance]) {
+    return self;
+  }
+  if (other.hasSafety) {
+    [self setSafety:other.safety];
+  }
+  if (other.hasPump) {
+    [self setPump:other.pump];
+  }
+  if (other.hasHeat) {
+    [self setHeat:other.heat];
+  }
+  if (other.hasAux) {
+    [self setAux:other.aux];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (Relays_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (Relays_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSet_Builder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    int32_t tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 8: {
+        [self setSafety:[input readBool]];
+        break;
+      }
+      case 16: {
+        [self setPump:[input readBool]];
+        break;
+      }
+      case 24: {
+        [self setHeat:[input readBool]];
+        break;
+      }
+      case 32: {
+        [self setAux:[input readBool]];
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasSafety {
+  return result.hasSafety;
+}
+- (BOOL) safety {
+  return result.safety;
+}
+- (Relays_Builder*) setSafety:(BOOL) value {
+  result.hasSafety = YES;
+  result.safety = value;
+  return self;
+}
+- (Relays_Builder*) clearSafety {
+  result.hasSafety = NO;
+  result.safety = NO;
+  return self;
+}
+- (BOOL) hasPump {
+  return result.hasPump;
+}
+- (BOOL) pump {
+  return result.pump;
+}
+- (Relays_Builder*) setPump:(BOOL) value {
+  result.hasPump = YES;
+  result.pump = value;
+  return self;
+}
+- (Relays_Builder*) clearPump {
+  result.hasPump = NO;
+  result.pump = NO;
+  return self;
+}
+- (BOOL) hasHeat {
+  return result.hasHeat;
+}
+- (BOOL) heat {
+  return result.heat;
+}
+- (Relays_Builder*) setHeat:(BOOL) value {
+  result.hasHeat = YES;
+  result.heat = value;
+  return self;
+}
+- (Relays_Builder*) clearHeat {
+  result.hasHeat = NO;
+  result.heat = NO;
+  return self;
+}
+- (BOOL) hasAux {
+  return result.hasAux;
+}
+- (BOOL) aux {
+  return result.aux;
+}
+- (Relays_Builder*) setAux:(BOOL) value {
+  result.hasAux = YES;
+  result.aux = value;
+  return self;
+}
+- (Relays_Builder*) clearAux {
+  result.hasAux = NO;
+  result.aux = NO;
+  return self;
+}
+@end
+
 @interface Temperature ()
 @property Float32 temperature;
 @property Float32 setPoint;
@@ -365,6 +1382,503 @@ static Temperature* defaultTemperatureInstance = nil;
 - (Temperature_Builder*) clearTriggerState {
   result.hasTriggerState = NO;
   result.triggerState = 0;
+  return self;
+}
+@end
+
+@interface ScheduleTimers ()
+@property uint32_t period;
+@property uint32_t minDuty;
+@property uint32_t maxDuty;
+@property uint64_t cycleStart;
+@property uint32_t manualDuration;
+@property uint32_t cycleElapsed;
+@property uint32_t dutyElapsed;
+@end
+
+@implementation ScheduleTimers
+
+- (BOOL) hasPeriod {
+  return !!hasPeriod_;
+}
+- (void) setHasPeriod:(BOOL) value_ {
+  hasPeriod_ = !!value_;
+}
+@synthesize period;
+- (BOOL) hasMinDuty {
+  return !!hasMinDuty_;
+}
+- (void) setHasMinDuty:(BOOL) value_ {
+  hasMinDuty_ = !!value_;
+}
+@synthesize minDuty;
+- (BOOL) hasMaxDuty {
+  return !!hasMaxDuty_;
+}
+- (void) setHasMaxDuty:(BOOL) value_ {
+  hasMaxDuty_ = !!value_;
+}
+@synthesize maxDuty;
+- (BOOL) hasCycleStart {
+  return !!hasCycleStart_;
+}
+- (void) setHasCycleStart:(BOOL) value_ {
+  hasCycleStart_ = !!value_;
+}
+@synthesize cycleStart;
+- (BOOL) hasManualDuration {
+  return !!hasManualDuration_;
+}
+- (void) setHasManualDuration:(BOOL) value_ {
+  hasManualDuration_ = !!value_;
+}
+@synthesize manualDuration;
+- (BOOL) hasCycleElapsed {
+  return !!hasCycleElapsed_;
+}
+- (void) setHasCycleElapsed:(BOOL) value_ {
+  hasCycleElapsed_ = !!value_;
+}
+@synthesize cycleElapsed;
+- (BOOL) hasDutyElapsed {
+  return !!hasDutyElapsed_;
+}
+- (void) setHasDutyElapsed:(BOOL) value_ {
+  hasDutyElapsed_ = !!value_;
+}
+@synthesize dutyElapsed;
+- (id) init {
+  if ((self = [super init])) {
+    self.period = 0;
+    self.minDuty = 0;
+    self.maxDuty = 0;
+    self.cycleStart = 0L;
+    self.manualDuration = 0;
+    self.cycleElapsed = 0;
+    self.dutyElapsed = 0;
+  }
+  return self;
+}
+static ScheduleTimers* defaultScheduleTimersInstance = nil;
++ (void) initialize {
+  if (self == [ScheduleTimers class]) {
+    defaultScheduleTimersInstance = [[ScheduleTimers alloc] init];
+  }
+}
++ (ScheduleTimers*) defaultInstance {
+  return defaultScheduleTimersInstance;
+}
+- (ScheduleTimers*) defaultInstance {
+  return defaultScheduleTimersInstance;
+}
+- (BOOL) isInitialized {
+  if (!self.hasPeriod) {
+    return NO;
+  }
+  if (!self.hasMinDuty) {
+    return NO;
+  }
+  if (!self.hasMaxDuty) {
+    return NO;
+  }
+  if (!self.hasCycleStart) {
+    return NO;
+  }
+  if (!self.hasManualDuration) {
+    return NO;
+  }
+  if (!self.hasCycleElapsed) {
+    return NO;
+  }
+  if (!self.hasDutyElapsed) {
+    return NO;
+  }
+  return YES;
+}
+- (void) writeToCodedOutputStream:(PBCodedOutputStream*) output {
+  if (self.hasPeriod) {
+    [output writeUInt32:1 value:self.period];
+  }
+  if (self.hasMinDuty) {
+    [output writeUInt32:2 value:self.minDuty];
+  }
+  if (self.hasMaxDuty) {
+    [output writeUInt32:3 value:self.maxDuty];
+  }
+  if (self.hasCycleStart) {
+    [output writeUInt64:4 value:self.cycleStart];
+  }
+  if (self.hasManualDuration) {
+    [output writeUInt32:5 value:self.manualDuration];
+  }
+  if (self.hasCycleElapsed) {
+    [output writeUInt32:6 value:self.cycleElapsed];
+  }
+  if (self.hasDutyElapsed) {
+    [output writeUInt32:7 value:self.dutyElapsed];
+  }
+  [self.unknownFields writeToCodedOutputStream:output];
+}
+- (int32_t) serializedSize {
+  int32_t size_ = memoizedSerializedSize;
+  if (size_ != -1) {
+    return size_;
+  }
+
+  size_ = 0;
+  if (self.hasPeriod) {
+    size_ += computeUInt32Size(1, self.period);
+  }
+  if (self.hasMinDuty) {
+    size_ += computeUInt32Size(2, self.minDuty);
+  }
+  if (self.hasMaxDuty) {
+    size_ += computeUInt32Size(3, self.maxDuty);
+  }
+  if (self.hasCycleStart) {
+    size_ += computeUInt64Size(4, self.cycleStart);
+  }
+  if (self.hasManualDuration) {
+    size_ += computeUInt32Size(5, self.manualDuration);
+  }
+  if (self.hasCycleElapsed) {
+    size_ += computeUInt32Size(6, self.cycleElapsed);
+  }
+  if (self.hasDutyElapsed) {
+    size_ += computeUInt32Size(7, self.dutyElapsed);
+  }
+  size_ += self.unknownFields.serializedSize;
+  memoizedSerializedSize = size_;
+  return size_;
+}
++ (ScheduleTimers*) parseFromData:(NSData*) data {
+  return (ScheduleTimers*)[[[ScheduleTimers builder] mergeFromData:data] build];
+}
++ (ScheduleTimers*) parseFromData:(NSData*) data extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ScheduleTimers*)[[[ScheduleTimers builder] mergeFromData:data extensionRegistry:extensionRegistry] build];
+}
++ (ScheduleTimers*) parseFromInputStream:(NSInputStream*) input {
+  return (ScheduleTimers*)[[[ScheduleTimers builder] mergeFromInputStream:input] build];
+}
++ (ScheduleTimers*) parseFromInputStream:(NSInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ScheduleTimers*)[[[ScheduleTimers builder] mergeFromInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ScheduleTimers*) parseFromCodedInputStream:(PBCodedInputStream*) input {
+  return (ScheduleTimers*)[[[ScheduleTimers builder] mergeFromCodedInputStream:input] build];
+}
++ (ScheduleTimers*) parseFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  return (ScheduleTimers*)[[[ScheduleTimers builder] mergeFromCodedInputStream:input extensionRegistry:extensionRegistry] build];
+}
++ (ScheduleTimers_Builder*) builder {
+  return [[ScheduleTimers_Builder alloc] init];
+}
++ (ScheduleTimers_Builder*) builderWithPrototype:(ScheduleTimers*) prototype {
+  return [[ScheduleTimers builder] mergeFrom:prototype];
+}
+- (ScheduleTimers_Builder*) builder {
+  return [ScheduleTimers builder];
+}
+- (ScheduleTimers_Builder*) toBuilder {
+  return [ScheduleTimers builderWithPrototype:self];
+}
+- (void) writeDescriptionTo:(NSMutableString*) output withIndent:(NSString*) indent {
+  if (self.hasPeriod) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"period", [NSNumber numberWithInt:self.period]];
+  }
+  if (self.hasMinDuty) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"minDuty", [NSNumber numberWithInt:self.minDuty]];
+  }
+  if (self.hasMaxDuty) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"maxDuty", [NSNumber numberWithInt:self.maxDuty]];
+  }
+  if (self.hasCycleStart) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"cycleStart", [NSNumber numberWithLongLong:self.cycleStart]];
+  }
+  if (self.hasManualDuration) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"manualDuration", [NSNumber numberWithInt:self.manualDuration]];
+  }
+  if (self.hasCycleElapsed) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"cycleElapsed", [NSNumber numberWithInt:self.cycleElapsed]];
+  }
+  if (self.hasDutyElapsed) {
+    [output appendFormat:@"%@%@: %@\n", indent, @"dutyElapsed", [NSNumber numberWithInt:self.dutyElapsed]];
+  }
+  [self.unknownFields writeDescriptionTo:output withIndent:indent];
+}
+- (BOOL) isEqual:(id)other {
+  if (other == self) {
+    return YES;
+  }
+  if (![other isKindOfClass:[ScheduleTimers class]]) {
+    return NO;
+  }
+  ScheduleTimers *otherMessage = other;
+  return
+      self.hasPeriod == otherMessage.hasPeriod &&
+      (!self.hasPeriod || self.period == otherMessage.period) &&
+      self.hasMinDuty == otherMessage.hasMinDuty &&
+      (!self.hasMinDuty || self.minDuty == otherMessage.minDuty) &&
+      self.hasMaxDuty == otherMessage.hasMaxDuty &&
+      (!self.hasMaxDuty || self.maxDuty == otherMessage.maxDuty) &&
+      self.hasCycleStart == otherMessage.hasCycleStart &&
+      (!self.hasCycleStart || self.cycleStart == otherMessage.cycleStart) &&
+      self.hasManualDuration == otherMessage.hasManualDuration &&
+      (!self.hasManualDuration || self.manualDuration == otherMessage.manualDuration) &&
+      self.hasCycleElapsed == otherMessage.hasCycleElapsed &&
+      (!self.hasCycleElapsed || self.cycleElapsed == otherMessage.cycleElapsed) &&
+      self.hasDutyElapsed == otherMessage.hasDutyElapsed &&
+      (!self.hasDutyElapsed || self.dutyElapsed == otherMessage.dutyElapsed) &&
+      (self.unknownFields == otherMessage.unknownFields || (self.unknownFields != nil && [self.unknownFields isEqual:otherMessage.unknownFields]));
+}
+- (NSUInteger) hash {
+  NSUInteger hashCode = 7;
+  if (self.hasPeriod) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.period] hash];
+  }
+  if (self.hasMinDuty) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.minDuty] hash];
+  }
+  if (self.hasMaxDuty) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.maxDuty] hash];
+  }
+  if (self.hasCycleStart) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithLongLong:self.cycleStart] hash];
+  }
+  if (self.hasManualDuration) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.manualDuration] hash];
+  }
+  if (self.hasCycleElapsed) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.cycleElapsed] hash];
+  }
+  if (self.hasDutyElapsed) {
+    hashCode = hashCode * 31 + [[NSNumber numberWithInt:self.dutyElapsed] hash];
+  }
+  hashCode = hashCode * 31 + [self.unknownFields hash];
+  return hashCode;
+}
+@end
+
+@interface ScheduleTimers_Builder()
+@property (strong) ScheduleTimers* result;
+@end
+
+@implementation ScheduleTimers_Builder
+@synthesize result;
+- (id) init {
+  if ((self = [super init])) {
+    self.result = [[ScheduleTimers alloc] init];
+  }
+  return self;
+}
+- (PBGeneratedMessage*) internalGetResult {
+  return result;
+}
+- (ScheduleTimers_Builder*) clear {
+  self.result = [[ScheduleTimers alloc] init];
+  return self;
+}
+- (ScheduleTimers_Builder*) clone {
+  return [ScheduleTimers builderWithPrototype:result];
+}
+- (ScheduleTimers*) defaultInstance {
+  return [ScheduleTimers defaultInstance];
+}
+- (ScheduleTimers*) build {
+  [self checkInitialized];
+  return [self buildPartial];
+}
+- (ScheduleTimers*) buildPartial {
+  ScheduleTimers* returnMe = result;
+  self.result = nil;
+  return returnMe;
+}
+- (ScheduleTimers_Builder*) mergeFrom:(ScheduleTimers*) other {
+  if (other == [ScheduleTimers defaultInstance]) {
+    return self;
+  }
+  if (other.hasPeriod) {
+    [self setPeriod:other.period];
+  }
+  if (other.hasMinDuty) {
+    [self setMinDuty:other.minDuty];
+  }
+  if (other.hasMaxDuty) {
+    [self setMaxDuty:other.maxDuty];
+  }
+  if (other.hasCycleStart) {
+    [self setCycleStart:other.cycleStart];
+  }
+  if (other.hasManualDuration) {
+    [self setManualDuration:other.manualDuration];
+  }
+  if (other.hasCycleElapsed) {
+    [self setCycleElapsed:other.cycleElapsed];
+  }
+  if (other.hasDutyElapsed) {
+    [self setDutyElapsed:other.dutyElapsed];
+  }
+  [self mergeUnknownFields:other.unknownFields];
+  return self;
+}
+- (ScheduleTimers_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input {
+  return [self mergeFromCodedInputStream:input extensionRegistry:[PBExtensionRegistry emptyRegistry]];
+}
+- (ScheduleTimers_Builder*) mergeFromCodedInputStream:(PBCodedInputStream*) input extensionRegistry:(PBExtensionRegistry*) extensionRegistry {
+  PBUnknownFieldSet_Builder* unknownFields = [PBUnknownFieldSet builderWithUnknownFields:self.unknownFields];
+  while (YES) {
+    int32_t tag = [input readTag];
+    switch (tag) {
+      case 0:
+        [self setUnknownFields:[unknownFields build]];
+        return self;
+      default: {
+        if (![self parseUnknownField:input unknownFields:unknownFields extensionRegistry:extensionRegistry tag:tag]) {
+          [self setUnknownFields:[unknownFields build]];
+          return self;
+        }
+        break;
+      }
+      case 8: {
+        [self setPeriod:[input readUInt32]];
+        break;
+      }
+      case 16: {
+        [self setMinDuty:[input readUInt32]];
+        break;
+      }
+      case 24: {
+        [self setMaxDuty:[input readUInt32]];
+        break;
+      }
+      case 32: {
+        [self setCycleStart:[input readUInt64]];
+        break;
+      }
+      case 40: {
+        [self setManualDuration:[input readUInt32]];
+        break;
+      }
+      case 48: {
+        [self setCycleElapsed:[input readUInt32]];
+        break;
+      }
+      case 56: {
+        [self setDutyElapsed:[input readUInt32]];
+        break;
+      }
+    }
+  }
+}
+- (BOOL) hasPeriod {
+  return result.hasPeriod;
+}
+- (uint32_t) period {
+  return result.period;
+}
+- (ScheduleTimers_Builder*) setPeriod:(uint32_t) value {
+  result.hasPeriod = YES;
+  result.period = value;
+  return self;
+}
+- (ScheduleTimers_Builder*) clearPeriod {
+  result.hasPeriod = NO;
+  result.period = 0;
+  return self;
+}
+- (BOOL) hasMinDuty {
+  return result.hasMinDuty;
+}
+- (uint32_t) minDuty {
+  return result.minDuty;
+}
+- (ScheduleTimers_Builder*) setMinDuty:(uint32_t) value {
+  result.hasMinDuty = YES;
+  result.minDuty = value;
+  return self;
+}
+- (ScheduleTimers_Builder*) clearMinDuty {
+  result.hasMinDuty = NO;
+  result.minDuty = 0;
+  return self;
+}
+- (BOOL) hasMaxDuty {
+  return result.hasMaxDuty;
+}
+- (uint32_t) maxDuty {
+  return result.maxDuty;
+}
+- (ScheduleTimers_Builder*) setMaxDuty:(uint32_t) value {
+  result.hasMaxDuty = YES;
+  result.maxDuty = value;
+  return self;
+}
+- (ScheduleTimers_Builder*) clearMaxDuty {
+  result.hasMaxDuty = NO;
+  result.maxDuty = 0;
+  return self;
+}
+- (BOOL) hasCycleStart {
+  return result.hasCycleStart;
+}
+- (uint64_t) cycleStart {
+  return result.cycleStart;
+}
+- (ScheduleTimers_Builder*) setCycleStart:(uint64_t) value {
+  result.hasCycleStart = YES;
+  result.cycleStart = value;
+  return self;
+}
+- (ScheduleTimers_Builder*) clearCycleStart {
+  result.hasCycleStart = NO;
+  result.cycleStart = 0L;
+  return self;
+}
+- (BOOL) hasManualDuration {
+  return result.hasManualDuration;
+}
+- (uint32_t) manualDuration {
+  return result.manualDuration;
+}
+- (ScheduleTimers_Builder*) setManualDuration:(uint32_t) value {
+  result.hasManualDuration = YES;
+  result.manualDuration = value;
+  return self;
+}
+- (ScheduleTimers_Builder*) clearManualDuration {
+  result.hasManualDuration = NO;
+  result.manualDuration = 0;
+  return self;
+}
+- (BOOL) hasCycleElapsed {
+  return result.hasCycleElapsed;
+}
+- (uint32_t) cycleElapsed {
+  return result.cycleElapsed;
+}
+- (ScheduleTimers_Builder*) setCycleElapsed:(uint32_t) value {
+  result.hasCycleElapsed = YES;
+  result.cycleElapsed = value;
+  return self;
+}
+- (ScheduleTimers_Builder*) clearCycleElapsed {
+  result.hasCycleElapsed = NO;
+  result.cycleElapsed = 0;
+  return self;
+}
+- (BOOL) hasDutyElapsed {
+  return result.hasDutyElapsed;
+}
+- (uint32_t) dutyElapsed {
+  return result.dutyElapsed;
+}
+- (ScheduleTimers_Builder*) setDutyElapsed:(uint32_t) value {
+  result.hasDutyElapsed = YES;
+  result.dutyElapsed = value;
+  return self;
+}
+- (ScheduleTimers_Builder*) clearDutyElapsed {
+  result.hasDutyElapsed = NO;
+  result.dutyElapsed = 0;
   return self;
 }
 @end
