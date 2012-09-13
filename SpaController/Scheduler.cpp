@@ -3,11 +3,6 @@
 
 #define h(_x) (_x * SECS_PER_HOUR)
 
-const char *weekDayStr[] =
-{
-  "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-};
-
 Scheduler::Scheduler
   ( ScheduleItem *items
   , int count
@@ -25,22 +20,31 @@ void Scheduler::printSchedule()
 {
   update();
   
+  Serial << "clk"
+  << " " << dayStr(weekday())
+  << " " << day()
+  << " " << monthStr(month())
+  << " " << year()
+  << " " << digital(now())
+  << endl;
+  
   for (int i = 0; i < _count; ++i)
   {
     ScheduleItem &si = _items[i];
     
-    for (int j = 0; j < 7; ++j)
-    {
-      if ((1 << (j + 1)) & si.weekdays)
-        Serial << weekDayStr[j] << " ";
-    }
-      
-    Serial << digital(si.startTime)
+    Serial << "sci"
+    << " " << digital(si.startTime)
     << " " << digital(si.endTime)
     << " " << digital(si.period)
     << " " << digitalSec(si.minDuty)
     << " " << digitalSec(si.maxDuty);
-
+    
+    for (int j = 1; j < 8; ++j)
+    {
+      if ((1 << j) & si.weekdays)
+        Serial << " " << dayShortStr(j);
+    }
+      
     if (&si == _currentItem)
       Serial << " **";
       
@@ -52,14 +56,20 @@ void Scheduler::printTimers()
 {
   update();
   
-  Serial << "stm"
-         << " " << digitalSec(cycleElapsed())
-         << " " << digitalSec(dutyElapsed())
-         << " " << digitalSec(_manualDuration)
-         << " " << digitalSec(_currentItem ? _currentItem->period : 0)
-         << endl;
-         
-  Serial << "cs " << _cycleStart << " ds " << _dutyStart << " da " << _dutyAccum << endl;
+  if (_currentItem)
+  {
+    Serial << "stm"
+           << " " << _currentItem->period
+           << " " << _currentItem->minDuty
+           << " " << _currentItem->maxDuty
+           << " " << _cycleStart
+           << " " << _manualDuration
+           << " " << cycleElapsed()
+           << " " << dutyElapsed()
+           << endl;
+  }
+
+  //Serial << "cs " << _cycleStart << " ds " << _dutyStart << " da " << _dutyAccum << endl;
 }
 
 void Scheduler::reset()
@@ -96,8 +106,8 @@ time_t Scheduler::dutyElapsed()
 ScheduleItem& Scheduler::itemForTime(time_t time)
 {
   uint8_t dm = 1 << weekday(time);
-  int hr = hour(time);
-  
+  time_t dt = elapsedSecsToday(time);
+ 
   for (int i = 0; i < _count; ++i)
   {
     ScheduleItem &si = _items[i];
@@ -105,7 +115,7 @@ ScheduleItem& Scheduler::itemForTime(time_t time)
     if (!(dm & si.weekdays))
       continue;
       
-    if (hr > si.startTime && hr < si.endTime)
+    if (dt >= si.startTime && dt < si.endTime)
       return _items[i];
   }
 }

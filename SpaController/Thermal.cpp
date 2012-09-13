@@ -1,5 +1,6 @@
 #include "Thermal.h"
 #include "Streaming.h"
+#include "Utils.h"
 
 Thermal::Thermal(char pin, ThermalCallback callback)
 : _callback(callback)
@@ -14,8 +15,10 @@ Thermal::Thermal(char pin, ThermalCallback callback)
 {
 }
 
-bool Thermal::setup()
+bool Thermal::setup(float sp)
 {
+  _sp = sp;
+  
   _sensor.begin();
 
   if (!_sensor.getAddress(_address, 0))
@@ -31,6 +34,11 @@ bool Thermal::setup()
   _next = millis() + TS_INTERVAL;
 
   return true;
+}
+
+void Thermal::setSetPoint(float sp)
+{
+  _sp = sp;  
 }
 
 void Thermal::update()

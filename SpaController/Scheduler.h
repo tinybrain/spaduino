@@ -18,12 +18,12 @@ enum eWeekDay { Sun = 0x02, Mon = 0x04, Tue = 0x08, Wed = 0x10, Thu = 0x20 , Fri
 
 struct ScheduleItem
 {
-  uint8_t  weekdays;
-  uint16_t startTime;
-  uint16_t endTime;
-  uint16_t period;
-  uint8_t minDuty;
-  uint8_t maxDuty;
+  uint8_t weekdays;
+  time_t startTime;
+  time_t endTime;
+  time_t period;
+  time_t minDuty;
+  time_t maxDuty;
 };
 
 class Scheduler

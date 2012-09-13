@@ -18,12 +18,12 @@ public:
   
   Thermal(char pin, ThermalCallback callback);
 
-  bool setup();
+  bool setup(float sp);
 
   float temperature() { return _t0; }
 
   float setPoint() { return _sp; }
-  void setSetPoint(float sp) { _sp = sp; }
+  void setSetPoint(float sp);
   
   float rate() { return _dt; }
   

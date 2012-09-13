@@ -1,10 +1,13 @@
+#include <EEPROM.h>
 #include <Streaming.h>
 
 #include <Time.h>
+#include <SimpleTimer.h>
 #include <SerialCommand.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <FiniteStateMachine.h>
+#include <SyncLED.h>
 
 #include "Utils.h"
 #include "Scheduler.h"
@@ -40,32 +43,101 @@
  se  state enter
  su  update
  sx  exit
+ wl  water level
+ hl  high limit
  
+ 
+ 
+ Pins
+ ----
+ 
+ 0    Error     -            3
+ 1    1-Wire    25 (PC2)    12    Brown
+ 2    Safety    16 (PB2)    11    Red
+ 3    Pump      13 (PD7)     9    Orange
+ 4    Heat      14 (PB0)     8    Yellow
+ 5    Aux       12 (PD6)     6    Green
+ 6    WL Out    27 (PC4)    A0    White
+ 7    WL In     23 (PC0)    A1    Red'
+ 8    HL In     28 (PC5)    A2    Orange'
+ 
+ x    GND        7         GND    Black
+ 
+      VCC        8
+      AREF      21
  */
+ 
+#define NUM_PINS     9
+
+#define ERR_LED      3
+#define ONE_WIRE    12
+#define RLY_SAFETY  11
+#define RLY_PUMP     9
+#define RLY_HEAT     8
+#define RLY_AUX      6
+#define WL_OUT      A0
+#define WL_IN       A1
+#define HL_IN       A2
+
+ // ====================================================================
+
+// EEPROM
+
+#define RUN    42
+#define TEST   23
+
+struct System
+{
+  byte magic;
+  float sp;
+};
+
+System sys;
+
+// Test
+
+SimpleTimer tt;
+
+int tp[] =
+{
+  ERR_LED, ONE_WIRE, RLY_SAFETY, RLY_PUMP, RLY_HEAT, RLY_AUX, WL_OUT, WL_IN, HL_IN
+};
+
+int tpc = 0;
 
 // ====================================================================
 
 // Schedule
 
-/*
+
 ScheduleItem scheduleItems[] =
 {
 //  Days         Start    End      Period   PrefDuty MaxDuty
-  { Fri | Sat  , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1) },
-  { Sat | Sun  , hr(00) , hr(02) , hr(1)  , mn(20) , hr(1) },
-  { AllWeek    , hr(00) , hr(8)  , hr(4)  , mn(20) , hr(4) },
-  { AllWeek    , hr(00) , hr(24) , hr(24) , 0      , 0 }
-};
-*/
 
+  // Exceptions
+  { Fri        , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1) },
+
+  // Shoulder - 7am to 1pm & 8pm to 10pm
+  { Weekdays   , hr(20) , hr(22) , hr(1)  , 0      , 0     },
+  { Weekdays   , hr(7)  , hr(13) , hr(1)  , 0      , 0     },
+  
+  // Peak - 1pm to 8pm Mon-Fri
+  { Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0     },
+  
+  // Default (Off Peak)
+  { AllWeek    , hr(00) , hr(24) , hr(4)  , mn(20) , hr(4) }
+};
+
+/*
 ScheduleItem scheduleItems[] =
 {
   { AllWeek    , hr(00) , hr(24) , 15     , 5      , 10 }
 };
+*/
 
 Scheduler sch(scheduleItems, sizeof(scheduleItems) / sizeof(ScheduleItem));
 
-#define soakDuration 15
+#define soakDuration hr(1)
 #define rapidHeatDuration hr(24)
  
 // ====================================================================
@@ -78,6 +150,9 @@ enum Status
 };
 
 Status err = Ok;
+Status errDisplay = Ok;
+
+SyncLED el(ERR_LED, LOW, false, 300UL);
 
 // Serial Commands
 
@@ -85,13 +160,31 @@ SerialCommand cmd;
 
 // Thermal Sensor
 
-Thermal th(12, onTemperatureChanged);
+Thermal th(ONE_WIRE, onTemperatureChanged);
 
 // Water level sensor
 
+struct LevelSensor
+{
+  int out, in, threshold, value;
+};
+
+LevelSensor ls =
+{
+  WL_OUT, WL_IN, 512, 0
+};
 
 // Heater element AC sense / High limit cutout
 
+struct HighLimit_
+{
+  int in, threshold, value;
+};
+
+HighLimit_ hl =
+{
+  HL_IN, 512, 0
+};
 
 // ====================================================================
 
@@ -104,7 +197,7 @@ struct Relays
 
 Relays relays = 
 {
-  8, 9, 10, 11
+  RLY_SAFETY, RLY_PUMP, RLY_HEAT, RLY_AUX
 };
 
 Array<Relays, byte> _relays(relays);
@@ -134,7 +227,7 @@ struct Mode
 Mode mode = 
 {
   State(enterModeError),
-  State(enterModeInit, updateModeInit),
+  State(enterModeInit, updateModeInit, exitModeInit),
   State(enterModeOff),
   State(0, updateModeAutoHeat, 0),
   State(enterModeRapidHeat, updateModeRapidHeat, exitModeRapidHeat),
@@ -185,17 +278,26 @@ Array<Aux, State> _aux(aux);
 
 void setupFSMs()
 {
-  fsm.mode.setup(0, _mode.count, _mode.data, sendMode);
-  fsm.pump.setup(1, _pump.count, _pump.data);
-  fsm.aux.setup(2, _aux.count, _aux.data);
+  fsm.mode.setup(0, _mode.count, _mode.data, sendStates);
+  fsm.pump.setup(1, _pump.count, _pump.data, sendStates);
+  fsm.aux.setup(2, _aux.count, _aux.data, sendStates);
 }
 
 // ====================================================================
 
 // Serial Commands
 
+void setupTestSerialCommands()
+{
+  cmd.addCommand("rst", softReset);
+  cmd.addCommand("tp", onTestPin);
+  cmd.addCommand("exit", endTest);
+}
+
 void setupSerialCommands()
 {
+  cmd.addCommand("rst", softReset);
+  cmd.addCommand("test", beginTest);
   cmd.addCommand("hi", sendAck);
   cmd.addCommand("err", sendError);
   cmd.addCommand("st", sendStates);
@@ -273,10 +375,12 @@ void sendStates()
   {
     FSM &m = _fsm[i];
     State *s = m.currentState();
-    Serial << " " << (s ? s->index() : -1);
+    Serial << " " << (s ? s->index() : 100);
   }
   
-  Serial << " " << th.triggerState() << "  " << sch.dutyState();
+  Serial << " " << err;
+  
+  //Serial << " " << th.triggerState() << "  " << sch.dutyState();
 
   Serial << endl;
 }
@@ -334,6 +438,11 @@ void sendTemperature()
 {
   Serial << "tmp " << th.temperature() << " " << th.setPoint()
          << " " << _FLOAT(th.rate(), 4) << " " << th.triggerState() << endl;
+         
+  Serial << "wl " << ls.value << endl;
+  Serial << "hl " << hl.value << endl;
+         
+  sch.printTimers();
 }
 
 // --------------------------------------------------------------------
@@ -417,16 +526,19 @@ void onSetPoint()
   }
 
   float sp = (float)atof(arg);
-
+  
   if (sp == 0.0f && arg[0] != '0')
   {
     sendInvalidArg();
     return;
   }
-  
+
   th.setSetPoint(sp);
 
-  sendSetPoint();
+  sys.sp = sp;  
+  writeSystem();
+
+  sendTemperature();
 }
 
 void sendSetPoint()
@@ -493,12 +605,67 @@ void setAuxRelay(int aux)
 
 // ====================================================================
 
+// MISC IO
+
+void setupIO()
+{
+  pinMode(ls.out, OUTPUT);
+  pinMode(ls.in, INPUT);
+
+  pinMode(hl.in, INPUT);
+}
+
+void checkWaterLevel()
+{
+  digitalWrite(ls.out, HIGH);
+  delay(5);
+
+  ls.value = analogRead(ls.in);
+  digitalWrite(ls.out, LOW);
+  
+  if (ls.value > ls.threshold)
+    return;
+    
+  if (!err)
+  {
+    err = WaterLevelSensor;
+    mode.error.immediateTransition();
+    sendStates();
+  }
+}
+
+void checkHighLimit()
+{
+  hl.value = analogRead(hl.in);
+  
+  if (hl.value > hl.threshold)
+    return;
+    
+  if (!pump.heat.current())
+    return;
+
+  if (!err)
+  {  
+    err = HighLimit;
+    mode.error.immediateTransition();
+    sendStates();
+  }
+}
+
+// ====================================================================
+
 // Mode FSM Handlers
 
 void enterModeError()
 {
   if (!pump.error.current())
     pump.error.immediateTransition();
+    
+  if (!aux.off.current())
+    aux.off.immediateTransition();
+    
+  el.setRate(100UL);
+  el.blinkPattern((byte)err, 100UL);
 }
 
 // --------------------------------------------------------------------
@@ -511,7 +678,9 @@ void enterModeInit()
 
   setupRelays();
 
-  th.setup();
+  th.setup(sys.sp);
+  
+  el.blinkPattern((byte)1, 300UL);
 
   if (err)
     mode.error.immediateTransition();
@@ -523,12 +692,13 @@ void updateModeInit()
     return;
 
   mode.autoheat.transition();
+  pump.off.transition();
+  aux.off.transition();
 }
 
 void exitModeInit()
 {
-  pump.off.transition();
-  aux.off.transition();
+  el.Off();
 }
 
 // --------------------------------------------------------------------
@@ -539,6 +709,8 @@ void enterModeOff()
 {
   pump.off.transition();
   aux.off.transition();
+  
+  el.Off();
 }
 
 // --------------------------------------------------------------------
@@ -551,7 +723,7 @@ void updateModeAutoHeat()
   
   if (sch.dutyState() != dsOver)
   {
-    p = (th.triggerState() == tsHigh && !aux.on.current())
+    p = (th.triggerState() == tsLow && !aux.on.current())
       ? pHeat : pOn;
   }
   
@@ -651,14 +823,6 @@ void enterPumpHeat()
   sch.startDutyTimer();
 }
 
-void updatePumpHeat()
-{
-  if (!err)
-    return;
-
-  pump.error.immediateTransition();
-}
-
 // --------------------------------------------------------------------
 
 // Aux FSM Handlers
@@ -687,13 +851,120 @@ void enterAuxOn()
 }
 
 // ====================================================================
+// Test
+
+void onTestPin()
+{
+  char *arg = cmd.next();
+
+  if (!arg)
+  {
+    Serial << "huh?" << endl;
+    return;
+  }
+
+  int p = strtol(arg, NULL, 10);
+
+  if ((p <= 0 && strcmp(arg, "0")) || p >= NUM_PINS)
+  {
+    sendInvalidArg();
+    return;
+  }
+  
+  digitalWrite(tp[tpc], LOW);
+  
+  tpc = p;
+}
+
+void beginTest()
+{
+  sys.magic = TEST;
+  writeSystem();
+
+  softReset();
+}
+
+void updateTest(void*)
+{
+  int p = tp[tpc];
+  int v = !digitalRead(p);
+  
+  Serial << "tp"
+  << " " << tpc
+  << " " << p 
+  << " " << v
+  << endl;
+  
+  digitalWrite(p, v);
+}
+
+void endTest()
+{
+  sys.magic = RUN;
+  writeSystem();
+  
+  softReset();
+}
+
+// ====================================================================
 // Setup
+
+void softReset()
+{
+  setPumpRelays(0, 0, 0);
+  setAuxRelay(0);
+  
+  asm volatile ("  jmp 0");
+}
+
+void readSystem()
+{
+  int bytes = EEPROM_readAnything(0, sys);
+  
+  Serial << "sys"
+  << " " << bytes
+  << " " << sys.magic
+  << " " << sys.sp
+  << endl;
+  
+  if (sys.magic == 23 || sys.magic == 42)
+    return;
+
+  Serial << "no magic, writing defaults to eeprom" << endl;
+  
+  sys.magic = 42;
+  sys.sp = 20.0f;
+  
+  writeSystem();
+}
+
+void writeSystem()
+{
+  int bytes = EEPROM_writeAnything(0, sys);
+}
+
+void testSetup()
+{
+  setupTestSerialCommands();
+  
+  for (int i = 0; i < NUM_PINS; ++i)
+    pinMode(tp[i], OUTPUT);
+  
+  tt.setInterval(500, updateTest);
+}
 
 void setup(void)
 {
   Serial.begin(9600);
-
+  
+  readSystem();
+  
+  if (sys.magic == TEST)
+    return testSetup();
+  
   Serial << "ok, give me bubbles!" << endl;
+  
+  setupIO();
   
   setupFSMs();
 
@@ -708,14 +979,29 @@ void setup(void)
 
 // Main
 
+void testLoop()
+{
+    tt.run();
+
+    cmd.readSerial();
+}
+
 void loop(void)
 {
-  cmd.readSerial();
-
+  if (sys.magic == TEST)
+    return testLoop();
+  
+  checkWaterLevel();
+  checkHighLimit();
+  
+  el.update();
+  
   th.update();
   
   sch.update();
-  
+
   for (int i = 0; i < _fsm.count; ++i)
     _fsm[i].update();
+
+  cmd.readSerial();
 }
