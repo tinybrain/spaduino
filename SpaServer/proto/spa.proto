@@ -1,0 +1,77 @@
+
+message SpaMessage
+{
+    required string class_name = 1;
+    optional bytes message = 2;
+}
+
+message States
+{
+    enum Aux
+    {
+        aOff = 0;
+        aOn = 1;
+        aNone = 100;
+    }
+
+    enum Pump
+    {
+        pError = 0;
+        pOff = 1;
+        pOn = 2;
+        pHeat = 3;
+        pNone = 100;
+    }
+
+    enum Mode
+    {
+        mError = 0;
+        mInit = 1;
+        mOff = 2;
+        mAuto = 3;
+        mRapid = 4;
+        mSoak = 5;
+        mNone = 100;
+    }
+
+    enum Status
+    {
+        eOk = 0;
+        eUnknown = 1;
+        eTemperatureSensor = 2;
+        eWaterLevelSensor = 3;
+        eHighLimit = 4;
+    }
+
+    required int32 aux = 1 [default = 100];
+    required int32 pump = 2 [default = 100];
+    required int32 mode = 3 [default = 100];
+    required int32 status = 4 [default = 0];
+}
+
+message Relays
+{
+    required bool safety = 1;
+    required bool pump = 2;
+    required bool heat = 3;
+    required bool aux = 4;
+}
+
+message Temperature
+{
+    required float temperature = 1;
+    required float set_point = 2;
+    required float derivative = 3;
+    required int32 trigger_state = 4;
+}
+
+message ScheduleTimers
+{
+    required uint32 period = 1;
+    required uint32 min_duty = 2;
+    required uint32 max_duty = 3;
+    required uint64 cycle_start = 4;
+    required uint32 manual_duration = 5;
+    required uint32 cycle_elapsed = 6;
+    required uint32 duty_elapsed = 7;
+}

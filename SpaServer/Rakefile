@@ -1,0 +1,9 @@
+
+task :proto do
+  FileList['proto/*.proto'].each do |f|
+    sh "rprotoc -p proto -o lib #{f}"
+  end
+end
+
+task :default => [:proto] do
+end

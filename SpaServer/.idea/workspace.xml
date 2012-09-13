@@ -2,18 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="730a8054-c020-49d4-9adc-12ed3bb56884" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/llama.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/handlers.rb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/proto/Spa.proto" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/spaserver" afterPath="$PROJECT_DIR$/bin/spaserver" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Gemfile" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Rakefile" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/protocol.rb" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/proto/Spa.proto" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/../Slimer/Slimer.xcodeproj/project.pbxproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.m" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.m" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.m" afterPath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/en.lproj/MainStoryboard.storyboard" afterPath="$PROJECT_DIR$/../Slimer/Slimer/en.lproj/MainStoryboard.storyboard" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/SpaController.ino" afterPath="$PROJECT_DIR$/../SpaController/SpaController.ino" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/SpaServer.iml" afterPath="$PROJECT_DIR$/.idea/SpaServer.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.h" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.h" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.h" afterPath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Scheduler.cpp" afterPath="$PROJECT_DIR$/../SpaController/Scheduler.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Scheduler.h" afterPath="$PROJECT_DIR$/../SpaController/Scheduler.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Thermal.cpp" afterPath="$PROJECT_DIR$/../SpaController/Thermal.cpp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Thermal.h" afterPath="$PROJECT_DIR$/../SpaController/Thermal.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Utils.h" afterPath="$PROJECT_DIR$/../SpaController/Utils.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/handlers.rb" afterPath="$PROJECT_DIR$/lib/handlers.rb" />
     </list>
     <ignored path="SpaServer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -79,19 +88,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="spaserver" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/bin/spaserver">
+      <file leaf-file-name="handlers.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/handlers.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="31" selection-start="233" selection-end="233" vertical-scroll-proportion="0.27412587">
+            <state line="75" column="0" selection-start="1237" selection-end="1237" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="handlers.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/handlers.rb">
+      <file leaf-file-name="Spa.proto" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/proto/Spa.proto">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="0" selection-start="251" selection-end="251" vertical-scroll-proportion="0.0">
+            <state line="72" column="19" selection-start="1259" selection-end="1259" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="protocol.rb" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/protocol.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="42" column="1" selection-start="912" selection-end="912" vertical-scroll-proportion="0.5689655">
               <folding />
             </state>
           </provider>
@@ -116,13 +134,6 @@
       </map>
     </option>
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///IRB console" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///IRB console" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///IRB console" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///IRB console" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///IRB console" root0="SKIP_HIGHLIGHTING" />
-  </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
@@ -131,6 +142,14 @@
         <option value="$PROJECT_DIR$/protocol.rb" />
         <option value="$PROJECT_DIR$/handlers.rb" />
         <option value="$PROJECT_DIR$/bin/spaserver" />
+        <option value="$PROJECT_DIR$/proto/spa.proto" />
+        <option value="$PROJECT_DIR$/Gemfile" />
+        <option value="$PROJECT_DIR$/Rakefile" />
+        <option value="$USER_HOME$/.rvm/gems/ruby-1.9.3-p194@spaserver/gems/ruby_protobuf-0.4.11/lib/protobuf/message/enum.rb" />
+        <option value="$PROJECT_DIR$/lib/spa.pb.rb" />
+        <option value="$PROJECT_DIR$/lib/handlers.rb" />
+        <option value="$PROJECT_DIR$/lib/protocol.rb" />
+        <option value="$PROJECT_DIR$/proto/Spa.proto" />
       </list>
     </option>
   </component>
@@ -138,7 +157,7 @@
     <treeState />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="935" />
+    <option name="x" value="918" />
     <option name="y" value="24" />
     <option name="width" value="985" />
     <option name="height" value="1172" />
@@ -198,6 +217,72 @@
               <option name="myItemId" value="SpaServer" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ruby_protobuf (v0.4.11, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ruby_protobuf (v0.4.11, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="protobuf" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ruby_protobuf (v0.4.11, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.NamedLibraryElementNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="protobuf" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="message" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -206,6 +291,34 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="proto" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SpaServer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -228,13 +341,14 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="reference.settings.ide.settings.uml" />
     <property name="recentsLimit" value="5" />
-    <property name="restartRequiresConfirmation" value="true" />
+    <property name="options.lastSelected" value="org.jetbrains.plugins.ruby.settings.RubyIdeSdkConfigurable" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/test_protocol.rb" />
+    <property name="restartRequiresConfirmation" value="true" />
     <property name="FullScreen" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="RakeTaksPopup.undocumentedIncluded" value="false" />
     <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="RunManager" selected="Ruby.spaserver">
     <configuration default="false" name="IRB console" type="IrbRunConfigurationType" factoryName="IRB console" temporary="true">
@@ -260,7 +374,31 @@
       <ConfigurationWrapper RunnerId="RubyRunner" />
       <method />
     </configuration>
-    <configuration default="false" name="spaserver" type="RubyRunConfigurationType" factoryName="Ruby" temporary="true">
+    <configuration default="false" name="proto" type="RakeRunConfigurationType" factoryName="Rake" temporary="true">
+      <module name="SpaServer" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e $stdout.sync=true;$stderr.sync=true;load($0=ARGV.shift)" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="$PROJECT_DIR$" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="myPassParentEnvs" VALUE="true" />
+      <envs />
+      <EXTENSION ID="BundlerRunConfigurationExtension" bundleExecEnabled="false" />
+      <EXTENSION ID="RubyCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" track_test_folders="true" runner="rcov">
+        <COVERAGE_PATTERN ENABLED="true">
+          <PATTERN REGEXPS="/.rvm/" INCLUDED="false" />
+        </COVERAGE_PATTERN>
+      </EXTENSION>
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_NAME" VALUE="proto" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_ARGS" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_ATTACHED_TEST_FRAMEWORKS" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_OPTION_TRACE" VALUE="false" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_OPTION_DRYRUN" VALUE="false" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_OPTION_PREREQS" VALUE="false" />
+      <RunnerSettings RunnerId="RubyRunner" />
+      <ConfigurationWrapper RunnerId="RubyRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="spaserver" type="RubyRunConfigurationType" factoryName="Ruby" singleton="true" temporary="true">
       <module name="SpaServer" />
       <RUBY_RUN_CONFIG NAME="RUBY_ARGS" VALUE="-e $stdout.sync=true;$stderr.sync=true;load($0=ARGV.shift)" />
       <RUBY_RUN_CONFIG NAME="WORK DIR" VALUE="$PROJECT_DIR$/bin" />
@@ -276,8 +414,32 @@
       </EXTENSION>
       <RUBY_RUN_CONFIG NAME="SCRIPT_PATH" VALUE="$PROJECT_DIR$/bin/spaserver" />
       <RUBY_RUN_CONFIG NAME="SCRIPT_ARGS" VALUE="/dev/cu.usbmodemfd1361" />
+      <RunnerSettings RunnerId="RubyDebugRunner" />
       <RunnerSettings RunnerId="RubyRunner" />
+      <ConfigurationWrapper RunnerId="RubyDebugRunner" />
       <ConfigurationWrapper RunnerId="RubyRunner" />
+      <method />
+    </configuration>
+    <configuration default="true" type="RakeRunConfigurationType" factoryName="Rake">
+      <module name="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RUBY_ARGS" VALUE="-e $stdout.sync=true;$stderr.sync=true;load($0=ARGV.shift)" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="WORK DIR" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="SHOULD_USE_SDK" VALUE="false" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="ALTERN_SDK_NAME" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="myPassParentEnvs" VALUE="true" />
+      <envs />
+      <EXTENSION ID="BundlerRunConfigurationExtension" bundleExecEnabled="false" />
+      <EXTENSION ID="RubyCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" track_test_folders="true" runner="rcov">
+        <COVERAGE_PATTERN ENABLED="true">
+          <PATTERN REGEXPS="/.rvm/" INCLUDED="false" />
+        </COVERAGE_PATTERN>
+      </EXTENSION>
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_NAME" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_ARGS" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_ATTACHED_TEST_FRAMEWORKS" VALUE="" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_OPTION_TRACE" VALUE="false" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_OPTION_DRYRUN" VALUE="false" />
+      <RAKE_RUN_CONFIG_SETTINGS_ID NAME="RAKE_TASK_OPTION_PREREQS" VALUE="false" />
       <method />
     </configuration>
     <configuration default="true" type="RSpecRunConfigurationType" factoryName="RSpec">
@@ -375,15 +537,17 @@
       <option name="CONTEXT_PROVIDER" />
       <method />
     </configuration>
-    <list size="2">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="IRB console.IRB console" />
-      <item index="1" class="java.lang.String" itemvalue="Ruby.spaserver" />
+      <item index="1" class="java.lang.String" itemvalue="Rake.proto" />
+      <item index="2" class="java.lang.String" itemvalue="Ruby.spaserver" />
     </list>
     <recent_temporary>
-      <list size="3">
+      <list size="4">
         <item index="0" class="java.lang.String" itemvalue="Ruby.spaserver" />
-        <item index="1" class="java.lang.String" itemvalue="IRB console.IRB console" />
+        <item index="1" class="java.lang.String" itemvalue="Rake.proto" />
         <item index="2" class="java.lang.String" itemvalue="IRB console.IRB console" />
+        <item index="3" class="java.lang.String" itemvalue="IRB console.IRB console" />
       </list>
     </recent_temporary>
   </component>
@@ -436,28 +600,29 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="935" y="24" width="985" height="1172" extended-state="0" />
+    <frame x="918" y="24" width="985" height="1172" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2358581" sideWeight="0.49626467" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32981783" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290735" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24844074" sideWeight="0.4067029" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33056134" sideWeight="0.67210144" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39945653" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33056134" sideWeight="0.60126585" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39873418" sideWeight="0.491684" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33056134" sideWeight="0.4936594" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2358581" sideWeight="0.49626467" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32789856" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32981783" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2358581" sideWeight="0.49626467" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39873418" sideWeight="0.5010395" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32981783" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32971016" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -521,6 +686,13 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$USER_HOME$/.rvm/rubies/ruby-1.9.3-p194/lib/ruby/1.9.1/forwardable.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="203" column="0" selection-start="5592" selection-end="5592" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="uml://Ruby/Queue">
       <provider selected="true" editor-type-id="UmlEditorProvider">
         <state>
@@ -531,7 +703,7 @@
           </nodes>
           <notes />
           <edges />
-          <settings layout="Hierarchic Group" zoom="1.0" x="-54.0" y="21.5" />
+          <settings layout="Hierarchic Group" zoom="1.0" x="-54.0" y="22.0" />
           <SelectedNodes>
             <node>Queue</node>
           </SelectedNodes>
@@ -540,6 +712,7 @@
             <Category>Methods</Category>
             <Category>Constants</Category>
           </Categories>
+          <SCOPE>All</SCOPE>
         </state>
       </provider>
     </entry>
@@ -560,33 +733,79 @@
             <Category>Methods</Category>
             <Category>Constants</Category>
           </Categories>
+          <SCOPE>All</SCOPE>
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Gemfile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="10" selection-start="209" selection-end="209" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p194@spaserver/gems/ruby_protobuf-0.4.11/lib/protobuf/message/message.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="114" column="0" selection-start="3188" selection-end="3188" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p194@spaserver/gems/eventmachine-0.12.10/lib/eventmachine.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1443" column="0" selection-start="56058" selection-end="56058" vertical-scroll-proportion="0.33333334">
+        <state line="262" column="0" selection-start="10171" selection-end="10171" vertical-scroll-proportion="0.3327787" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Rakefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="0" selection-start="138" selection-end="138" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bin/spaserver">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="0" selection-start="190" selection-end="190" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p194@spaserver/gems/eventmachine-0.12.10/lib/pr_eventmachine.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="332" column="0" selection-start="8430" selection-end="8430" vertical-scroll-proportion="0.3327787" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/spa.pb.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="77" column="31" selection-start="1600" selection-end="1600" vertical-scroll-proportion="0.25081432" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p194@spaserver/gems/ruby_protobuf-0.4.11/lib/protobuf/message/field.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="670" column="0" selection-start="15617" selection-end="15617" vertical-scroll-proportion="0.60399336" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p194@spaserver/gems/ruby_protobuf-0.4.11/lib/protobuf/message/enum.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="0" selection-start="477" selection-end="477" vertical-scroll-proportion="0.3207547" />
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/rubies/ruby-1.9.3-p194/lib/ruby/1.9.1/forwardable.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="227" column="25" selection-start="6208" selection-end="6208" vertical-scroll-proportion="0.3249768">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/handlers.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="0" selection-start="251" selection-end="251" vertical-scroll-proportion="0.0">
+        <state line="75" column="0" selection-start="1237" selection-end="1237" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/proto/Spa.proto">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="1" selection-start="167" selection-end="167" vertical-scroll-proportion="0.13706294">
+        <state line="72" column="19" selection-start="1259" selection-end="1259" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/bin/spaserver">
+    <entry file="file://$PROJECT_DIR$/lib/protocol.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="31" selection-start="233" selection-end="233" vertical-scroll-proportion="0.27412587">
+        <state line="42" column="1" selection-start="912" selection-end="912" vertical-scroll-proportion="0.5689655">
           <folding />
         </state>
       </provider>

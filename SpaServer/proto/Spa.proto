@@ -1,8 +1,0 @@
-
-message Temperature
-{
-    required float temperature = 1;
-    required float set_point = 2;
-    required float derivative = 3;
-    required int32 trigger_state = 4;
-}
