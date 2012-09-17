@@ -492,6 +492,7 @@ BOOL States_ModeIsValidValue(States_Mode value) {
     case States_ModeMAuto:
     case States_ModeMRapid:
     case States_ModeMSoak:
+    case States_ModeMFilter:
     case States_ModeMNone:
       return YES;
     default:

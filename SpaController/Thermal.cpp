@@ -38,7 +38,8 @@ bool Thermal::setup(float sp)
 
 void Thermal::setSetPoint(float sp)
 {
-  _sp = sp;  
+  _sp = sp;
+  _ts = tsLow;
 }
 
 void Thermal::update()

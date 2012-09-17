@@ -1,6 +1,4 @@
 source "http://rubygems.org"
-source "http://gems.rubyforge.org"
-source "http://gems.github.com"
 
 gem "bundler"
 gem "rake"
@@ -9,5 +7,3 @@ gem "eventmachine"
 gem "serialport"
 gem "ruby_protobuf"
 
-gem "ruby-debug-base19x"
-gem "ruby-debug-ide"

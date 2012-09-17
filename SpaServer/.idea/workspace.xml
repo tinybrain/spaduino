@@ -2,27 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="730a8054-c020-49d4-9adc-12ed3bb56884" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Gemfile" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Rakefile" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/protocol.rb" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/proto/Spa.proto" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer.xcodeproj/project.pbxproj" afterPath="$PROJECT_DIR$/../Slimer/Slimer.xcodeproj/project.pbxproj" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.m" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.m" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.m" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.m" afterPath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/en.lproj/MainStoryboard.storyboard" afterPath="$PROJECT_DIR$/../Slimer/Slimer/en.lproj/MainStoryboard.storyboard" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/SpaController.ino" afterPath="$PROJECT_DIR$/../SpaController/SpaController.ino" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/SpaServer.iml" afterPath="$PROJECT_DIR$/.idea/SpaServer.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.h" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTAppDelegate.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.h" afterPath="$PROJECT_DIR$/../Slimer/Slimer/LTViewController.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.h" afterPath="$PROJECT_DIR$/../Slimer/Slimer/ProtobufObjc/Spa.pb.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Scheduler.cpp" afterPath="$PROJECT_DIR$/../SpaController/Scheduler.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Scheduler.h" afterPath="$PROJECT_DIR$/../SpaController/Scheduler.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Thermal.cpp" afterPath="$PROJECT_DIR$/../SpaController/Thermal.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Thermal.h" afterPath="$PROJECT_DIR$/../SpaController/Thermal.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../SpaController/Utils.h" afterPath="$PROJECT_DIR$/../SpaController/Utils.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/handlers.rb" afterPath="$PROJECT_DIR$/lib/handlers.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gemfile.lock" afterPath="$PROJECT_DIR$/Gemfile.lock" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gemfile" afterPath="$PROJECT_DIR$/Gemfile" />
     </list>
     <ignored path="SpaServer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -97,19 +82,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Spa.proto" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/proto/Spa.proto">
+      <file leaf-file-name="protocol.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/protocol.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="72" column="19" selection-start="1259" selection-end="1259" vertical-scroll-proportion="0.0">
+            <state line="28" column="0" selection-start="366" selection-end="366" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="protocol.rb" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lib/protocol.rb">
+      <file leaf-file-name="Spa.proto" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/proto/Spa.proto">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="1" selection-start="912" selection-end="912" vertical-scroll-proportion="0.5689655">
+            <state line="34" column="0" selection-start="470" selection-end="470" vertical-scroll-proportion="0.32185146">
               <folding />
             </state>
           </provider>
@@ -157,10 +142,10 @@
     <treeState />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="918" />
-    <option name="y" value="24" />
-    <option name="width" value="985" />
-    <option name="height" value="1172" />
+    <option name="x" value="623" />
+    <option name="y" value="22" />
+    <option name="width" value="1280" />
+    <option name="height" value="1024" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -210,6 +195,16 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -324,16 +319,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="PackagesPane" />
       <pane id="ColorIdeProjectViewPane" />
     </panes>
@@ -341,14 +326,14 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="recentsLimit" value="5" />
     <property name="options.lastSelected" value="org.jetbrains.plugins.ruby.settings.RubyIdeSdkConfigurable" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/test_protocol.rb" />
+    <property name="recentsLimit" value="5" />
     <property name="restartRequiresConfirmation" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/test_protocol.rb" />
     <property name="FullScreen" value="false" />
     <property name="RakeTaksPopup.undocumentedIncluded" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RunManager" selected="Ruby.spaserver">
     <configuration default="false" name="IRB console" type="IrbRunConfigurationType" factoryName="IRB console" temporary="true">
@@ -600,18 +585,18 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="918" y="24" width="985" height="1172" extended-state="0" />
-    <editor active="false" />
+    <frame x="623" y="22" width="1280" height="1024" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2358581" sideWeight="0.49626467" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32981783" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290735" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24844074" sideWeight="0.4067029" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33056134" sideWeight="0.60126585" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2529833" sideWeight="0.539666" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39873418" sideWeight="0.491684" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33056134" sideWeight="0.4936594" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2358581" sideWeight="0.49626467" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.39873418" sideWeight="0.5010395" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45973498" sideWeight="0.9944312" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32981783" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Data Sources" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -688,9 +673,7 @@
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/.rvm/rubies/ruby-1.9.3-p194/lib/ruby/1.9.1/forwardable.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="203" column="0" selection-start="5592" selection-end="5592" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="203" column="0" selection-start="5592" selection-end="5592" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="uml://Ruby/Queue">
@@ -784,9 +767,7 @@
     </entry>
     <entry file="file://$USER_HOME$/.rvm/rubies/ruby-1.9.3-p194/lib/ruby/1.9.1/forwardable.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="227" column="25" selection-start="6208" selection-end="6208" vertical-scroll-proportion="0.3249768">
-          <folding />
-        </state>
+        <state line="227" column="25" selection-start="6208" selection-end="6208" vertical-scroll-proportion="0.3249768" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/handlers.rb">
@@ -796,16 +777,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/proto/Spa.proto">
+    <entry file="file://$PROJECT_DIR$/lib/protocol.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="72" column="19" selection-start="1259" selection-end="1259" vertical-scroll-proportion="0.0">
+        <state line="28" column="0" selection-start="366" selection-end="366" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/protocol.rb">
+    <entry file="file://$PROJECT_DIR$/proto/Spa.proto">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="1" selection-start="912" selection-end="912" vertical-scroll-proportion="0.5689655">
+        <state line="34" column="0" selection-start="470" selection-end="470" vertical-scroll-proportion="0.32185146">
           <folding />
         </state>
       </provider>

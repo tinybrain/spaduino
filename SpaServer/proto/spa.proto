@@ -31,6 +31,7 @@ message States
         mAuto = 3;
         mRapid = 4;
         mSoak = 5;
+        mFilter = 6;
         mNone = 100;
     }
 

@@ -54,16 +54,16 @@
  0    Error     -            3
  1    1-Wire    25 (PC2)    12    Brown
  2    Safety    16 (PB2)    11    Red
- 3    Pump      13 (PD7)     9    Orange
- 4    Heat      14 (PB0)     8    Yellow
+ 3    Pump      14 (PD7)     9    Orange
+ 4    Heat      13 (PB0)     8    Yellow
  5    Aux       12 (PD6)     6    Green
  6    WL Out    27 (PC4)    A0    White
- 7    WL In     23 (PC0)    A1    Red'
- 8    HL In     28 (PC5)    A2    Orange'
+ 7    WL In     23 (PC0)    A1    Orange'
+ 8    HL In     28 (PC5)    A2    Blue'
  
  x    GND        7         GND    Black
  
-      VCC        8
+      VCC        8                Blue
       AREF      21
  */
  
@@ -75,8 +75,8 @@
 #define RLY_PUMP     9
 #define RLY_HEAT     8
 #define RLY_AUX      6
-#define WL_OUT      A0
-#define WL_IN       A1
+#define WL_OUT      A1
+#define WL_IN       A0
 #define HL_IN       A2
 
  // ====================================================================
@@ -183,7 +183,7 @@ struct HighLimit_
 
 HighLimit_ hl =
 {
-  HL_IN, 512, 0
+  HL_IN, 100, 0
 };
 
 // ====================================================================
@@ -221,7 +221,7 @@ Array<FSMS, FSM> _fsm(fsm);
 
 struct Mode
 {
-  State error, init, off, autoheat, rapidheat, soak; 
+  State error, init, off, autoheat, rapidheat, soak, filter;
 };
 
 Mode mode = 
@@ -231,7 +231,8 @@ Mode mode =
   State(enterModeOff),
   State(0, updateModeAutoHeat, 0),
   State(enterModeRapidHeat, updateModeRapidHeat, exitModeRapidHeat),
-  State(enterModeSoak, updateModeSoak, exitModeSoak)
+  State(enterModeSoak, updateModeSoak, exitModeSoak),
+  State(enterModeFilter, 0, exitModeFilter)
 };
 
 Array<Mode, State> _mode(mode);
@@ -291,7 +292,7 @@ void setupTestSerialCommands()
 {
   cmd.addCommand("rst", softReset);
   cmd.addCommand("tp", onTestPin);
-  cmd.addCommand("exit", endTest);
+  cmd.addCommand("end", endTest);
 }
 
 void setupSerialCommands()
@@ -483,6 +484,7 @@ void onMode()
   if ((mi <= 0 && strcmp(arg, "0")) || mi >= fsm.mode.numStates())
   {
     sendInvalidArg();
+    Serial << "mi " << mi << " numStates " << fsm.mode.numStates() << endl;
     return;
   }
 
@@ -618,7 +620,7 @@ void setupIO()
 void checkWaterLevel()
 {
   digitalWrite(ls.out, HIGH);
-  delay(5);
+  delay(20);
 
   ls.value = analogRead(ls.in);
   digitalWrite(ls.out, LOW);
@@ -638,7 +640,7 @@ void checkHighLimit()
 {
   hl.value = analogRead(hl.in);
   
-  if (hl.value > hl.threshold)
+  if (hl.value < hl.threshold)
     return;
     
   if (!pump.heat.current())
@@ -691,9 +693,10 @@ void updateModeInit()
   if (timeStatus() == timeNotSet)
     return;
 
-  mode.autoheat.transition();
-  pump.off.transition();
-  aux.off.transition();
+  mode.off.transition();
+  //mode.autoheat.transition();
+  //pump.off.transition();
+  //aux.off.transition();
 }
 
 void exitModeInit()
@@ -711,6 +714,21 @@ void enterModeOff()
   aux.off.transition();
   
   el.Off();
+}
+
+// --------------------------------------------------------------------
+
+// Filter
+
+void enterModeFilter()
+{
+  sch.manual(rapidHeatDuration);
+  pump.on.transition();
+}
+
+void exitModeFilter()
+{
+  sch.reset();
 }
 
 // --------------------------------------------------------------------
@@ -950,7 +968,7 @@ void testSetup()
   for (int i = 0; i < NUM_PINS; ++i)
     pinMode(tp[i], OUTPUT);
   
-  tt.setInterval(500, updateTest);
+  tt.setInterval(2000, updateTest);
 }
 
 void setup(void)

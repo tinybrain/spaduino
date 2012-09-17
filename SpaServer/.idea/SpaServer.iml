@@ -4,16 +4,10 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="archive-tar-minitar (v0.5.2, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="bundler (v1.1.5, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="columnize (v0.3.6, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="em-serialport (v0.0.2, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="eventmachine (v0.12.10, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="linecache19 (v0.5.13, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rake (v0.9.2.2, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ruby-debug-base19x (v0.11.30.pre10, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ruby-debug-ide (v0.4.17.beta14, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="ruby_core_source (v0.1.5, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby_protobuf (v0.4.11, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="serialport (v1.1.0, RVM: ruby-1.9.3-p194 [spaserver]) [gem]" level="application" />
   </component>

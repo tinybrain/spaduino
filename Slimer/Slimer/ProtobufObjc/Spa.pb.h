@@ -49,6 +49,7 @@ typedef enum {
   States_ModeMAuto = 3,
   States_ModeMRapid = 4,
   States_ModeMSoak = 5,
+  States_ModeMFilter = 6,
   States_ModeMNone = 100,
 } States_Mode;
 
