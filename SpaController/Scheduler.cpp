@@ -66,6 +66,7 @@ void Scheduler::printTimers()
            << " " << _manualDuration
            << " " << cycleElapsed()
            << " " << dutyElapsed()
+           << " " << dutyState()
            << endl;
   }
 

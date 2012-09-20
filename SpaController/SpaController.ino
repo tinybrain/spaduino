@@ -112,7 +112,7 @@ int tpc = 0;
 
 ScheduleItem scheduleItems[] =
 {
-//  Days         Start    End      Period   PrefDuty MaxDuty
+//  Days         Start    End      Period   MinDuty MaxDuty
 
   // Exceptions
   { Fri        , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1) },
@@ -125,7 +125,7 @@ ScheduleItem scheduleItems[] =
   { Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0     },
   
   // Default (Off Peak)
-  { AllWeek    , hr(00) , hr(24) , hr(4)  , mn(20) , hr(4) }
+  { AllWeek    , hr(00) , hr(24) , hr(1)  , mn(5) , hr(1) }
 };
 
 /*
@@ -440,8 +440,10 @@ void sendTemperature()
   Serial << "tmp " << th.temperature() << " " << th.setPoint()
          << " " << _FLOAT(th.rate(), 4) << " " << th.triggerState() << endl;
          
-  Serial << "wl " << ls.value << endl;
-  Serial << "hl " << hl.value << endl;
+  Serial << "sns "
+  << " " << ls.value
+  << " " << hl.value
+  << endl;
          
   sch.printTimers();
 }
@@ -744,6 +746,9 @@ void updateModeAutoHeat()
     p = (th.triggerState() == tsLow && !aux.on.current())
       ? pHeat : pOn;
   }
+  
+  if (_pump[p].current())
+    return;
   
   _pump[p].transition();
 }
