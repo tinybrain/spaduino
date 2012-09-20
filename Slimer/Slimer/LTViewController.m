@@ -60,7 +60,7 @@
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
     
-    CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)@"llama-macbook-pro.local", 8782, &readStream, &writeStream);
+    CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)@"bubbles-raspberry-pi.local", 8782, &readStream, &writeStream);
     
     inputStream = (NSInputStream*)readStream;
     outputStream = (NSOutputStream*)writeStream;
