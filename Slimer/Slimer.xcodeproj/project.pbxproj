@@ -11,6 +11,8 @@
 		6C0AB6BE15F70E5700829714 /* right_tick.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C0AB6BC15F70E5700829714 /* right_tick.png */; };
 		6C0AB6C215F7143200829714 /* arrow_down.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C0AB6C015F7143200829714 /* arrow_down.png */; };
 		6C0AB6C315F7143200829714 /* arrow_up.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C0AB6C115F7143200829714 /* arrow_up.png */; };
+		6C1B5EB3162180F90018B9BE /* bubbles_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C1B5EB2162180F90018B9BE /* bubbles_57.png */; };
+		6C1B5EB6162181530018B9BE /* bubbles_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C1B5EB5162181530018B9BE /* bubbles_114.png */; };
 		6C3E950E15FACC2C00C516D6 /* libProtocolBuffersTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C3E950D15FACC2C00C516D6 /* libProtocolBuffersTouch.a */; };
 		6C95544915EC8BC700C72620 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95544815EC8BC600C72620 /* UIKit.framework */; };
 		6C95544B15EC8BC700C72620 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C95544A15EC8BC700C72620 /* Foundation.framework */; };
@@ -59,6 +61,8 @@
 		6C0AB6BC15F70E5700829714 /* right_tick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_tick.png; sourceTree = "<group>"; };
 		6C0AB6C015F7143200829714 /* arrow_down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_down.png; sourceTree = "<group>"; };
 		6C0AB6C115F7143200829714 /* arrow_up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow_up.png; sourceTree = "<group>"; };
+		6C1B5EB2162180F90018B9BE /* bubbles_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bubbles_57.png; sourceTree = "<group>"; };
+		6C1B5EB5162181530018B9BE /* bubbles_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bubbles_114.png; sourceTree = "<group>"; };
 		6C3E950D15FACC2C00C516D6 /* libProtocolBuffersTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libProtocolBuffersTouch.a; path = "../../protobuf/protobuf-objc/src/runtime/Build/Products/Release-iphoneos/libProtocolBuffersTouch.a"; sourceTree = "<group>"; };
 		6C95544415EC8BC600C72620 /* Slimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Slimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C95544815EC8BC600C72620 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -132,6 +136,8 @@
 		6C95543915EC8BC600C72620 = {
 			isa = PBXGroup;
 			children = (
+				6C1B5EB5162181530018B9BE /* bubbles_114.png */,
+				6C1B5EB2162180F90018B9BE /* bubbles_57.png */,
 				6C3E951015FACCC400C516D6 /* Protobuf */,
 				6CB2226D15FB331F00F31843 /* ProtobufObjc */,
 				6C0AB6BA15F70E5700829714 /* Images */,
@@ -295,6 +301,8 @@
 				6C0AB6C215F7143200829714 /* arrow_down.png in Resources */,
 				6C0AB6C315F7143200829714 /* arrow_up.png in Resources */,
 				6CB2226915FB2F3300F31843 /* Spa.proto in Resources */,
+				6C1B5EB3162180F90018B9BE /* bubbles_57.png in Resources */,
+				6C1B5EB6162181530018B9BE /* bubbles_114.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

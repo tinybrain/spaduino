@@ -39,6 +39,11 @@
     [[UIApplication sharedApplication] setStatusBarHidden:YES
                                             withAnimation:UIStatusBarAnimationFade];
     
+    self.autoTimerLabel.text = nil;
+    self.rapidTimerLabel.text = nil;
+    self.filterTimerLabel.text = nil;
+    self.soakTimerLabel.text = nil;
+    
     //[self startClient];
 }
 
@@ -60,7 +65,7 @@
     CFReadStreamRef readStream;
     CFWriteStreamRef writeStream;
     
-    CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)@"bubbles-raspberry-pi.local", 8782, &readStream, &writeStream);
+    CFStreamCreatePairWithSocketToHost(NULL, (CFStringRef)@"bubbles.local", 8782, &readStream, &writeStream);
     
     inputStream = (NSInputStream*)readStream;
     outputStream = (NSOutputStream*)writeStream;
@@ -346,7 +351,10 @@
     
     _rapidTimerLabel.text = (_rapidButton.selected)
     ? formatTimer(mr) : @"";
-    
+
+    _filterTimerLabel.text = (_filterButton.selected)
+    ? formatTimer(mr) : @"";
+
     _soakTimerLabel.text = (_soakButton.selected)
     ? formatTimer(mr) : @"";        
 }

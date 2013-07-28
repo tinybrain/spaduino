@@ -60,10 +60,13 @@
 @property (nonatomic, retain) IBOutlet UIButton *offButton;
 @property (nonatomic, retain) IBOutlet UIButton *autoButton;
 @property (nonatomic, retain) IBOutlet UIButton *rapidButton;
+@property (nonatomic, retain) IBOutlet UIButton *filterButton;
 @property (nonatomic, retain) IBOutlet UIButton *soakButton;
 @property (nonatomic, retain) IBOutlet UIButton *auxButton;
 
+@property (nonatomic, retain) IBOutlet UILabel  *autoTimerLabel;
 @property (nonatomic, retain) IBOutlet UILabel  *rapidTimerLabel;
+@property (nonatomic, retain) IBOutlet UILabel  *filterTimerLabel;
 @property (nonatomic, retain) IBOutlet UILabel  *soakTimerLabel;
 
 @property (nonatomic, retain) Temperature *temperature;

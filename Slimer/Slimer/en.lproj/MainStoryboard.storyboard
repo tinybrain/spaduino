@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="2549" systemVersion="12A269" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="2">
     <dependencies>
-        <deployment defaultVersion="1296" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1498"/>
     </dependencies>
     <scenes>
@@ -15,7 +14,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fBT-xq-Suh">
-                                <rect key="frame" x="20" y="9" width="58" height="34"/>
+                                <rect key="frame" x="20" y="10" width="100" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="32"/>
                                 <state key="normal" title="off">
@@ -36,7 +35,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="kP1-kh-BKL">
-                                <rect key="frame" x="20" y="51" width="73" height="39"/>
+                                <rect key="frame" x="20" y="50" width="100" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="32"/>
                                 <state key="normal" title="auto">
@@ -57,7 +56,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="aS5-eJ-wJJ">
-                                <rect key="frame" x="20" y="93" width="70" height="39"/>
+                                <rect key="frame" x="20" y="90" width="100" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="32"/>
                                 <state key="normal" title="rapid">
@@ -78,7 +77,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="1mb-bN-x8c">
-                                <rect key="frame" x="20" y="152" width="70" height="39"/>
+                                <rect key="frame" x="20" y="190" width="100" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="32"/>
                                 <state key="normal" title="soak">
@@ -99,7 +98,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Xvk-uk-z5M">
-                                <rect key="frame" x="20" y="194" width="70" height="39"/>
+                                <rect key="frame" x="20" y="230" width="100" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="32"/>
                                 <state key="normal" title="aux">
@@ -203,25 +202,60 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="cdn-jX-mFX" userLabel="Soak timer">
-                                <rect key="frame" x="137" y="152" width="101" height="39"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="vBd-aX-FtW" userLabel="Rapid timer">
-                                <rect key="frame" x="137" y="93" width="101" height="39"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </label>
                             <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="ok" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="EaF-XN-RVw">
                                 <rect key="frame" x="221" y="278" width="125" height="28"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="15"/>
                                 <color key="textColor" red="0.77652496099472046" green="0.10622810572385788" blue="0.1454775333404541" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </label>
+                            <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="arx-LZ-QTY">
+                                <rect key="frame" x="20" y="130" width="100" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="32"/>
+                                <state key="normal" title="filter">
+                                    <color key="titleColor" white="0.29999999999999999" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="disabled">
+                                    <color key="titleColor" white="0.14999999999999999" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                </state>
+                                <state key="highlighted">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="mode:" destination="2" eventType="touchUpInside" id="1cI-eP-65c"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="00:00.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="gvn-dH-Pdf" userLabel="Soak timer">
+                                <rect key="frame" x="109" y="193" width="134" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="00:00.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="8bu-5L-Xkz" userLabel="Filter timer">
+                                <rect key="frame" x="109" y="133" width="134" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="00:00.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="JQg-FC-86L" userLabel="Rapid timer">
+                                <rect key="frame" x="109" y="93" width="134" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="00:00.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="tZs-Rn-wuG" userLabel="Auto timer">
+                                <rect key="frame" x="109" y="53" width="134" height="39"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </label>
                         </subviews>
@@ -235,20 +269,22 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
                         <outlet property="autoButton" destination="kP1-kh-BKL" id="BQs-vl-PQ5"/>
+                        <outlet property="autoTimerLabel" destination="tZs-Rn-wuG" id="Q34-xB-bFv"/>
                         <outlet property="auxButton" destination="Xvk-uk-z5M" id="off-Dg-TXe"/>
                         <outlet property="auxRelay" destination="Otr-Vr-lK3" id="ufh-4n-AZQ"/>
                         <outlet property="barBackground" destination="r1n-aM-GLw" id="Jbj-ZV-avQ"/>
+                        <outlet property="filterTimerLabel" destination="8bu-5L-Xkz" id="OEG-Hf-duy"/>
                         <outlet property="heatRelay" destination="XGX-wf-uly" id="OKD-f3-kd6"/>
                         <outlet property="offButton" destination="fBT-xq-Suh" id="bg9-kr-tdz"/>
                         <outlet property="pumpRelay" destination="FsH-Oj-rMT" id="Lg8-T5-imn"/>
                         <outlet property="rapidButton" destination="aS5-eJ-wJJ" id="ejE-b6-0i1"/>
-                        <outlet property="rapidTimerLabel" destination="vBd-aX-FtW" id="UlP-C8-jIM"/>
+                        <outlet property="rapidTimerLabel" destination="JQg-FC-86L" id="d1E-ME-7as"/>
                         <outlet property="safetyRelay" destination="1a7-hq-9RA" id="2Tm-Tr-Tkz"/>
                         <outlet property="setPointBar" destination="lec-cp-2im" id="I6U-8p-X8r"/>
                         <outlet property="setPointLabel" destination="sbR-2Q-j4X" id="Nzt-00-Cge"/>
                         <outlet property="setPointView" destination="0qb-vO-ioW" id="7bV-vM-RQE"/>
                         <outlet property="soakButton" destination="1mb-bN-x8c" id="VJe-RT-3w7"/>
-                        <outlet property="soakTimerLabel" destination="cdn-jX-mFX" id="mMm-JA-riz"/>
+                        <outlet property="soakTimerLabel" destination="gvn-dH-Pdf" id="4fx-q4-zfQ"/>
                         <outlet property="status" destination="EaF-XN-RVw" id="HYf-d5-phG"/>
                         <outlet property="temperatureBar" destination="2IM-6j-Li2" id="1nD-n8-phi"/>
                         <outlet property="temperatureLabel" destination="DUq-1c-kHO" id="X8d-6p-jNV"/>
@@ -272,11 +308,16 @@
         <class className="LTViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/LTViewController.h"/>
             <relationships>
+                <relationship kind="action" name="aux:" candidateClass="UIButton"/>
+                <relationship kind="action" name="mode:" candidateClass="UIButton"/>
+                <relationship kind="action" name="onSetPointPanGesture:" candidateClass="UIPanGestureRecognizer"/>
                 <relationship kind="outlet" name="autoButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="autoTimerLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="auxButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="auxRelay" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="auxTimerLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="barBackground" candidateClass="UIView"/>
+                <relationship kind="outlet" name="filterButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="filterTimerLabel" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="heatRelay" candidateClass="UILabel"/>
                 <relationship kind="outlet" name="offButton" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="pumpRelay" candidateClass="UILabel"/>
