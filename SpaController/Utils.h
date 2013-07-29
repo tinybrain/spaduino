@@ -32,11 +32,28 @@ public:
   size_t count;
 };
 
+class ByteArray
+{
+public:
+  
+  ByteArray(byte data_[], size_t count_)
+  : data(data_)
+  , count(count_)
+  {}
+  
+  byte &operator[](size_t i) { return data[i]; }
+  
+  byte *data;
+  size_t count;
+};
+
+// --------------------------------------------------------------------
+
 template <class T>
 int EEPROM_writeAnything(int ee, const T& value)
 {
     const byte* p = (const byte*)(const void*)&value;
-    int i;
+    byte i;
     for (i = 0; i < sizeof(value); i++)
 	  EEPROM.write(ee++, *p++);
     return i;
@@ -46,7 +63,7 @@ template <class T>
 int EEPROM_readAnything(int ee, T& value)
 {
     byte* p = (byte*)(void*)&value;
-    int i;
+    byte i;
     for (i = 0; i < sizeof(value); i++)
 	  *p++ = EEPROM.read(ee++);
     return i;

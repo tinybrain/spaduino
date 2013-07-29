@@ -3,6 +3,34 @@
 
 #define h(_x) (_x * SECS_PER_HOUR)
 
+char fmtbuff[12];
+
+char* dec2(char *p, byte value)
+{
+  *p++ = '0' + value / 10;
+  *p++ = '0' + value % 10;
+  return p;
+}
+
+char* digital(time_t t, boolean showSecs)
+{
+  char *p = fmtbuff;
+  
+  p = dec2(p, hour(t));
+  *p++ = ':';
+  p = dec2(p, minute(t));
+
+  if (showSecs)
+  {
+    *p++ = ':';
+    p = dec2(p, second(t));
+  }
+  
+  *p++ = 0;
+
+  return fmtbuff;
+}
+
 Scheduler::Scheduler
   ( ScheduleItem *items
   , int count
@@ -25,7 +53,7 @@ void Scheduler::printSchedule()
   << " " << day()
   << " " << monthStr(month())
   << " " << year()
-  << " " << digital(now())
+  << " " << digital(now(), false)
   << endl;
   
   for (int i = 0; i < _count; ++i)
@@ -33,11 +61,11 @@ void Scheduler::printSchedule()
     ScheduleItem &si = _items[i];
     
     Serial << "sci"
-    << " " << digital(si.startTime)
-    << " " << digital(si.endTime)
-    << " " << digital(si.period)
-    << " " << digitalSec(si.minDuty)
-    << " " << digitalSec(si.maxDuty);
+    << " " << digital(si.startTime, false)
+    << " " << digital(si.endTime, false)
+    << " " << digital(si.period, false)
+    << " " << digital(si.minDuty, true)
+    << " " << digital(si.maxDuty, true);
     
     for (int j = 1; j < 8; ++j)
     {
@@ -119,6 +147,8 @@ ScheduleItem& Scheduler::itemForTime(time_t time)
     if (dt >= si.startTime && dt < si.endTime)
       return _items[i];
   }
+  
+  return _items[0];
 }
 
 void Scheduler::update()

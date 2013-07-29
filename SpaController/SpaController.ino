@@ -1,17 +1,20 @@
 #include <EEPROM.h>
 #include <Streaming.h>
-
 #include <Time.h>
 #include <SimpleTimer.h>
 #include <SerialCommand.h>
+#include <Wire.h>
+#include <SPI.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <DS3232RTC.h>
 #include <FiniteStateMachine.h>
 #include <SyncLED.h>
 
 #include "Utils.h"
 #include "Scheduler.h"
 #include "Thermal.h"
+#include "ControlPad.h"
 
 // ====================================================================
 
@@ -45,8 +48,7 @@
  sx  exit
  wl  water level
  hl  high limit
- 
- 
+  
  
  Pins
  ----
@@ -69,15 +71,43 @@
  
 #define NUM_PINS     9
 
+/*
 #define ERR_LED      3
-#define ONE_WIRE    12
+
 #define RLY_SAFETY  11
 #define RLY_PUMP     9
 #define RLY_HEAT     8
 #define RLY_AUX      6
+
 #define WL_OUT      A1
+
 #define WL_IN       A0
 #define HL_IN       A2
+
+#define ONE_WIRE    12
+*/
+
+#define PAD_SW1      0
+#define PAD_SW2      1
+#define PAD_SW3      2
+#define PAD_SW4      3
+#define ONE_WIRE     4
+#define RLY_SAFETY   5
+#define RLY_PUMP     6
+#define RLY_HEAT     7
+#define RLY_AUX      8
+#define RLY_LIGHT2   9
+#define SHR_LATCH   10
+#define SHR_DATA    11 // MOSI
+// MISO
+#define SHR_CLK     13 // SCK
+
+#define WL_OUT      A0
+#define WL_IN       A1
+#define HL_IN       A2
+#define RLY_LIGHT1  A3
+#define I2C_SDA     A4 // RTC
+#define I2C_SCL     A5 // RTC
 
  // ====================================================================
 
@@ -93,6 +123,10 @@ struct System
 };
 
 System sys;
+
+// Pad timer
+
+SimpleTimer pt;
 
 // Test
 
@@ -121,8 +155,7 @@ ScheduleItem scheduleItems[] =
   { Weekdays   , hr(20) , hr(22) , hr(1)  , 0      , 0     },
   { Weekdays   , hr(7)  , hr(13) , hr(1)  , 0      , 0     },
   
-  // Peak - 1pm to 8pm Mon-Fri
-  { Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0     },
+  // Peak - 1pm to 8pm Mon-Fri  { Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0     },
   
   // Default (Off Peak)
   { AllWeek    , hr(00) , hr(24) , hr(1)  , mn(5) , hr(1) }
@@ -185,6 +218,10 @@ HighLimit_ hl =
 {
   HL_IN, 100, 0
 };
+
+// ====================================================================
+
+ControlPad pad(SHR_CLK, SHR_LATCH, SHR_DATA);
 
 // ====================================================================
 
@@ -372,7 +409,7 @@ void sendStates()
 {
   Serial << "st";
 
-  for (int i = 0; i < _fsm.count; ++i)
+  for (byte i = 0; i < _fsm.count; ++i)
   {
     FSM &m = _fsm[i];
     State *s = m.currentState();
@@ -444,8 +481,6 @@ void sendTemperature()
   << " " << ls.value
   << " " << hl.value
   << endl;
-         
-  sch.printTimers();
 }
 
 // --------------------------------------------------------------------
@@ -455,7 +490,7 @@ void sendRelays()
 {
   Serial << "rly";
 
-  for (int i = 0; i < _relays.count; ++i)
+  for (byte i = 0; i < _relays.count; ++i)
     Serial << " " << digitalRead(_relays[i]);
 
   Serial << endl;
@@ -575,7 +610,7 @@ void onTemperatureChanged()
   if (th.temperature() < -273.15)
     err = TemperatureSensor;
 
-  sendTemperature();
+  //sendTemperature();
 }
 
 // ====================================================================
@@ -584,7 +619,7 @@ void onTemperatureChanged()
 
 void setupRelays()
 {
-  for (int i = 0; i < _relays.count; ++i)
+  for (byte i = 0; i < _relays.count; ++i)
   {
     pinMode(_relays[i], OUTPUT);
     digitalWrite(_relays[i], LOW);
@@ -615,17 +650,14 @@ void setupIO()
 {
   pinMode(ls.out, OUTPUT);
   pinMode(ls.in, INPUT);
+  digitalWrite(ls.out, HIGH);
 
   pinMode(hl.in, INPUT);
 }
 
 void checkWaterLevel()
 {
-  digitalWrite(ls.out, HIGH);
-  delay(20);
-
   ls.value = analogRead(ls.in);
-  digitalWrite(ls.out, LOW);
   
   if (ls.value > ls.threshold)
     return;
@@ -634,7 +666,7 @@ void checkWaterLevel()
   {
     err = WaterLevelSensor;
     mode.error.immediateTransition();
-    sendStates();
+    //sendStates();
   }
 }
 
@@ -652,7 +684,7 @@ void checkHighLimit()
   {  
     err = HighLimit;
     mode.error.immediateTransition();
-    sendStates();
+    //sendStates();
   }
 }
 
@@ -963,7 +995,7 @@ void readSystem()
 
 void writeSystem()
 {
-  int bytes = EEPROM_writeAnything(0, sys);
+  EEPROM_writeAnything(0, sys);
 }
 
 void testSetup()
@@ -987,15 +1019,23 @@ void setup(void)
   
   Serial << "ok, give me bubbles!" << endl;
   
+  RTC.set33kHzOutput(false);
+  RTC.clearAlarmFlag(3);
+  
   setupIO();
   
   setupFSMs();
 
-  setSyncProvider(requestSync);
+  setSyncProvider(RTC.get);
 
   mode.init.transition();
   
-  Serial << "ts " << timeStatus() << endl;
+  pt.setInterval(5, updatePad);
+  pad.setup();
+  //pad.seg.setValue(555);
+  pad.seg.encodeString("37.4");
+  
+  Serial << "TS " << timeStatus() << endl;
 
   Serial << "SRAM " << freeRam() << " bytes" << endl;  
 }
@@ -1009,21 +1049,28 @@ void testLoop()
     cmd.readSerial();
 }
 
+void updatePad(void*)
+{
+  pad.update();
+}
+
 void loop(void)
 {
   if (sys.magic == TEST)
     return testLoop();
   
-  checkWaterLevel();
-  checkHighLimit();
+  //checkWaterLevel();
+  //checkHighLimit();
   
-  el.update();
+  //el.update();
   
-  th.update();
+  //th.update();
   
-  sch.update();
+  //sch.update();
+  
+  pt.run();
 
-  for (int i = 0; i < _fsm.count; ++i)
+  for (byte i = 0; i < _fsm.count; ++i)
     _fsm[i].update();
 
   cmd.readSerial();
