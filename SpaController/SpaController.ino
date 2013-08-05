@@ -1,8 +1,6 @@
 #include <EEPROM.h>
-#include <Streaming.h>
 #include <Time.h>
 #include <SimpleTimer.h>
-#include <SerialCommand.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <OneWire.h>
@@ -10,93 +8,73 @@
 #include <DS3232RTC.h>
 #include <FiniteStateMachine.h>
 #include <SyncLED.h>
+#include <TimerOne.h>
 
 #include "Utils.h"
 #include "Scheduler.h"
 #include "Thermal.h"
+#include "Button.h"
 #include "ControlPad.h"
 
 // ====================================================================
 
+//#define NOTEMP
+//#define NOWATER
+//#define NOHIGHLIMIT
+
 /*
 
- Commands
- --------
- 
- hi   hello
- ok   ack
- unk  unknown
- err  error
- nr   not ready
- inv  invalid arg
- st   states
- syn  sync
- ti   time
- tm   temp
- rly  relays
- md   mode
- a    aux
- sp   setpoint
- sc   schedules
- stm  scheduletimers  
- 
- FSM debug messages
- ------------------
- 
- se  state enter
- su  update
- sx  exit
- wl  water level
- hl  high limit
-  
- 
  Pins
  ----
  
  0    Error     -            3
  1    1-Wire    25 (PC2)    12    Brown
- 2    Safety    16 (PB2)    11    Red
+ 2    Safety    16 (PB2)    11    Red            
  3    Pump      14 (PD7)     9    Orange
  4    Heat      13 (PB0)     8    Yellow
  5    Aux       12 (PD6)     6    Green
- 6    WL Out    27 (PC4)    A0    White
- 7    WL In     23 (PC0)    A1    Orange'
- 8    HL In     28 (PC5)    A2    Blue'
+ 6    WL In     23 (PC0)    A0    White
+ 7    WL Out    27 (PC4)    A1    Blue'
+ 8    HL In     28 (PC5)    A2    Orange'
  
  x    GND        7         GND    Black
  
-      VCC        8                Blue
-      AREF      21
+ VCC        8                Blue
+ AREF      21
  */
- 
+
 #define NUM_PINS     9
 
 /*
 #define ERR_LED      3
+ 
+ #define RLY_SAFETY  11
+ #define RLY_PUMP     9
+ #define RLY_HEAT     8
+ #define RLY_AUX      6
+ 
+ #define WL_OUT      A1
+ 
+ #define WL_IN       A0
+ #define HL_IN       A2
+ 
+ #define ONE_WIRE    12
+ */
 
-#define RLY_SAFETY  11
-#define RLY_PUMP     9
-#define RLY_HEAT     8
-#define RLY_AUX      6
+#define ERR_LED      0
 
-#define WL_OUT      A1
+#define RLY_SAFETY   4
+#define RLY_PUMP     3
+#define RLY_HEAT     2
+#define RLY_AUX      1
 
-#define WL_IN       A0
-#define HL_IN       A2
+#define PAD_PZ       5
 
-#define ONE_WIRE    12
-*/
+#define PAD_LEFT     9
+#define PAD_RIGHT    8
+#define PAD_UP       6
+#define PAD_DOWN     7
 
-#define PAD_SW1      0
-#define PAD_SW2      1
-#define PAD_SW3      2
-#define PAD_SW4      3
-#define ONE_WIRE     4
-#define RLY_SAFETY   5
-#define RLY_PUMP     6
-#define RLY_HEAT     7
-#define RLY_AUX      8
-#define RLY_LIGHT2   9
 #define SHR_LATCH   10
 #define SHR_DATA    11 // MOSI
 // MISO
@@ -105,11 +83,12 @@
 #define WL_OUT      A0
 #define WL_IN       A1
 #define HL_IN       A2
-#define RLY_LIGHT1  A3
+#define ONE_WIRE    A3 //A3
 #define I2C_SDA     A4 // RTC
 #define I2C_SCL     A5 // RTC
 
- // ====================================================================
+
+// ====================================================================
 
 // EEPROM
 
@@ -128,10 +107,6 @@ System sys;
 
 SimpleTimer pt;
 
-// Test
-
-SimpleTimer tt;
-
 int tp[] =
 {
   ERR_LED, ONE_WIRE, RLY_SAFETY, RLY_PUMP, RLY_HEAT, RLY_AUX, WL_OUT, WL_IN, HL_IN
@@ -146,40 +121,33 @@ int tpc = 0;
 
 ScheduleItem scheduleItems[] =
 {
-//  Days         Start    End      Period   MinDuty MaxDuty
+  //  Days         Start    End      Period   MinDuty MaxDuty
 
   // Exceptions
-  { Fri        , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1) },
+  {   Fri        , hr(18) , hr(24) , hr(1)  , mn(20) , hr(1)   },
 
   // Shoulder - 7am to 1pm & 8pm to 10pm
-  { Weekdays   , hr(20) , hr(22) , hr(1)  , 0      , 0     },
-  { Weekdays   , hr(7)  , hr(13) , hr(1)  , 0      , 0     },
-  
-  // Peak - 1pm to 8pm Mon-Fri  { Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0     },
-  
-  // Default (Off Peak)
-  { AllWeek    , hr(00) , hr(24) , hr(1)  , mn(5) , hr(1) }
-};
+  {   Weekdays   , hr(20) , hr(22) , hr(1)  , 0      , 0       },
+  {   Weekdays   , hr(7)  , hr(13) , hr(1)  , 0      , 0       },
 
-/*
-ScheduleItem scheduleItems[] =
-{
-  { AllWeek    , hr(00) , hr(24) , 15     , 5      , 10 }
+  // Peak - 1pm to 8pm Mon-Fri  { Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0     },
+
+  // Default (Off Peak)
+  {   AllWeek    , hr(00) , hr(24) , hr(1)  , mn(5) , hr(1)    },
 };
-*/
 
 Scheduler sch(scheduleItems, sizeof(scheduleItems) / sizeof(ScheduleItem));
 
 #define soakDuration hr(1)
 #define rapidHeatDuration hr(24)
- 
+
 // ====================================================================
 
 // Main error
 
 enum Status
 {
-  Ok, Unknown, TemperatureSensor, WaterLevelSensor, HighLimit
+  Ok, Unknown, Clock, TemperatureSensor, WaterLevelSensor, HighLimit
 };
 
 Status err = Ok;
@@ -187,13 +155,14 @@ Status errDisplay = Ok;
 
 SyncLED el(ERR_LED, LOW, false, 300UL);
 
-// Serial Commands
-
-SerialCommand cmd;
+char *errStr[] = 
+{
+  "  ", "ERR", "RTC", "TPS ", "H20", "CUR"
+};
 
 // Thermal Sensor
 
-Thermal th(ONE_WIRE, onTemperatureChanged);
+Thermal th(ONE_WIRE, onTemperatureUpdated);
 
 // Water level sensor
 
@@ -221,7 +190,17 @@ HighLimit_ hl =
 
 // ====================================================================
 
-ControlPad pad(SHR_CLK, SHR_LATCH, SHR_DATA);
+Buttons buttons =
+{
+  Button(PAD_LEFT),
+  Button(PAD_RIGHT),
+  Button(PAD_UP),
+  Button(PAD_DOWN)
+};
+
+Array<Buttons, Button> _buttons(buttons);
+
+ControlPad pad(SHR_CLK, SHR_LATCH, SHR_DATA, _buttons);
 
 // ====================================================================
 
@@ -245,7 +224,7 @@ Array<Relays, byte> _relays(relays);
 
 struct FSMS
 {
-  FSM mode, pump, aux;
+  FSM mode, pump, aux, menu;
 };
 
 FSMS fsm;
@@ -258,7 +237,7 @@ Array<FSMS, FSM> _fsm(fsm);
 
 struct Mode
 {
-  State error, init, off, autoheat, rapidheat, soak, filter;
+  State error, init, off, autoheat, soak, rapidheat;
 };
 
 Mode mode = 
@@ -266,19 +245,26 @@ Mode mode =
   State(enterModeError),
   State(enterModeInit, updateModeInit, exitModeInit),
   State(enterModeOff),
-  State(0, updateModeAutoHeat, 0),
-  State(enterModeRapidHeat, updateModeRapidHeat, exitModeRapidHeat),
+  State(enterModeAutoHeat, updateModeAutoHeat, 0),
   State(enterModeSoak, updateModeSoak, exitModeSoak),
-  State(enterModeFilter, 0, exitModeFilter)
+  State(enterModeRapidHeat, updateModeRapidHeat, exitModeRapidHeat)
 };
 
 Array<Mode, State> _mode(mode);
+
+char *modeStr[] =
+{
+  "ERR", "INI", "OFF", "AUT", "ON ", "RPD"
+};
 
 // --------------------------------------------------------------------
 
 // Pump FSM
 
-enum ePump { pError, pOff, pOn, pHeat };
+enum ePump
+{ 
+  pError, pOff, pOn, pHeat
+};
 
 struct Pump
 {
@@ -312,76 +298,65 @@ Aux aux =
 
 Array<Aux, State> _aux(aux);
 
+// --------------------------------------------------------------------
+
+// Menu FSM
+
+struct Menu
+{
+  State error, mode, setpoint, timer, blower, footwell, steps, head, path, softreset;
+};
+
+Menu menu =
+{
+  State(enterMenuError, updateMenuError, 0),
+  State(enterMenuMode, updateMenuMode, 0),
+  State(enterMenuSetpoint, updateMenuSetpoint, 0),
+  State(enterMenuTimer, updateMenuTimer, 0),
+  State(enterMenuBlower, updateMenuBlower, 0),
+  State(enterMenuFootwell, updateMenuFootwell, 0),
+  State(enterMenuSteps, updateMenuSteps, 0),
+  State(enterMenuHead, updateMenuHead, 0),
+  State(enterMenuPath, updateMenuPath, 0),
+  State(enterMenuReset, updateMenuReset, 0)
+};
+
+Array<Menu, State> _menu(menu);
+
+// --------------------------------------------------------------------
+
 // Setup
 
 void setupFSMs()
 {
-  fsm.mode.setup(0, _mode.count, _mode.data, sendStates);
-  fsm.pump.setup(1, _pump.count, _pump.data, sendStates);
-  fsm.aux.setup(2, _aux.count, _aux.data, sendStates);
+  fsm.mode.setup(0, _mode.count, _mode.data);
+  fsm.pump.setup(1, _pump.count, _pump.data);
+  fsm.aux.setup(2, _aux.count, _aux.data);
+  fsm.menu.setup(3, _menu.count, _menu.data);
+  
+  // mode links
+  
+  mode.off.link(NULL, &mode.autoheat);
+  mode.autoheat.link(&mode.off, &mode.soak);
+  mode.soak.link(&mode.autoheat, &mode.rapidheat);
+  mode.rapidheat.link(&mode.soak, NULL);
+  
+  // menu links
+  
+  for (int i = 1; i < _menu.count; ++i)
+  {
+    int p = i - 1;
+    if (p == 0) p = _menu.count - 1;
+    
+    int n = i + 1;
+    if (n == _menu.count) n = 1;
+    
+    _menu[i].link(&_menu[p], &_menu[n]);
+  }
 }
 
 // ====================================================================
 
-// Serial Commands
-
-void setupTestSerialCommands()
-{
-  cmd.addCommand("rst", softReset);
-  cmd.addCommand("tp", onTestPin);
-  cmd.addCommand("end", endTest);
-}
-
-void setupSerialCommands()
-{
-  cmd.addCommand("rst", softReset);
-  cmd.addCommand("test", beginTest);
-  cmd.addCommand("hi", sendAck);
-  cmd.addCommand("err", sendError);
-  cmd.addCommand("st", sendStates);
-  cmd.addCommand("ti", onTime);
-  cmd.addCommand("tmp", sendTemperature);
-  cmd.addCommand("rly", sendRelays);
-  cmd.addCommand("md", onMode);
-  cmd.addCommand("a", onAux);
-  cmd.addCommand("sp", onSetPoint);
-  cmd.addCommand("sc", sendSchedules);
-  cmd.addCommand("stm", sendScheduleTimers);
-
-  cmd.setDefaultHandler(onUnknown);
-}
-
-// --------------------------------------------------------------------
-// ack
-
-void sendAck()
-{
-  Serial << "ok " << endl;
-}
-
-// --------------------------------------------------------------------
-// unknown
-
-void onUnknown(const char *cmd)
-{
-  Serial << "unk" << endl;
-}
-
-// --------------------------------------------------------------------
-// not ready
-
-void sendNotReady()
-{
-  Serial << "nr" << endl;
-}
-
-// --------------------------------------------------------------------
-// invalid
-
-void sendInvalidArg()
-{
-  Serial << "inv " << cmd.bufferPtr() << endl;
-}
 
 // --------------------------------------------------------------------
 // error
@@ -390,227 +365,25 @@ bool checkError(State &errorState)
 {
   if (errorState.current())
   {
-    sendError();
+    //showError();
     return true;
   }
 
   return false;
 }
 
-void sendError()
-{
-  Serial << "err " << " " << err << endl;
-}
-
-// --------------------------------------------------------------------
-// states
-
-void sendStates()
-{
-  Serial << "st";
-
-  for (byte i = 0; i < _fsm.count; ++i)
-  {
-    FSM &m = _fsm[i];
-    State *s = m.currentState();
-    Serial << " " << (s ? s->index() : 100);
-  }
-  
-  Serial << " " << err;
-  
-  //Serial << " " << th.triggerState() << "  " << sch.dutyState();
-
-  Serial << endl;
-}
-
-// --------------------------------------------------------------------
-// sync
-
-time_t requestSync()
-{
-  Serial << "syn" << endl;
-  return 0;
-}
-
-// --------------------------------------------------------------------
-// time
-
-void onTime()
-{
-  time_t pctime = 0;
-  char *arg = cmd.next();
-
-  if (!arg)
-  {
-    sendTime();
-    return;
-  }
-
-  pctime = strtol(arg, NULL, 10);
-
-  if (!pctime)
-  {
-    sendInvalidArg();
-    return;
-  }
-
-  pctime += 10 * SECS_PER_HOUR;
-  
-  setTime(pctime);
-
-  sendTime();
-}
-
-// --------------------------------------------------------------------
-// time
-
-void sendTime()
-{
-  Serial << "ti " << now() << " " << timeStatus() << endl;
-}
-
-// --------------------------------------------------------------------
-// temp
-
-void sendTemperature()
-{
-  Serial << "tmp " << th.temperature() << " " << th.setPoint()
-         << " " << _FLOAT(th.rate(), 4) << " " << th.triggerState() << endl;
-         
-  Serial << "sns "
-  << " " << ls.value
-  << " " << hl.value
-  << endl;
-}
-
-// --------------------------------------------------------------------
-// relays
-
-void sendRelays()
-{
-  Serial << "rly";
-
-  for (byte i = 0; i < _relays.count; ++i)
-    Serial << " " << digitalRead(_relays[i]);
-
-  Serial << endl;
-}
-
-// --------------------------------------------------------------------
-// mode
-
-void onMode()
-{
-  if (checkError(mode.error)) return;
-
-  if (!fsm.mode.currentState()) { 
-    sendNotReady(); 
-    return; 
-  }
-
-  char *arg = cmd.next();
-
-  if (!arg)
-  {
-    sendMode();
-    return;
-  }
-
-  int mi = strtol(arg, NULL, 10);
-
-  if ((mi <= 0 && strcmp(arg, "0")) || mi >= fsm.mode.numStates())
-  {
-    sendInvalidArg();
-    Serial << "mi " << mi << " numStates " << fsm.mode.numStates() << endl;
-    return;
-  }
-
-  State *s = fsm.mode.states();
-  s[mi].transition();
-}
-
-void sendMode()
-{
-  Serial << "md " << fsm.mode.currentState()->index() << endl;
-}
-
-// --------------------------------------------------------------------
-// aux
-
-void onAux()
-{
-  if (checkError(mode.error)) return;
-
-  if (!fsm.aux.currentState()) { 
-    sendNotReady(); 
-    return; 
-  }
-
-  toggleAux();
-}
-
-// --------------------------------------------------------------------
-// setpoint
-
-void onSetPoint()
-{
-  if (checkError(mode.error)) return;
-
-  char *arg = cmd.next();
-
-  if (!arg)
-  {
-    sendSetPoint();
-    return;
-  }
-
-  float sp = (float)atof(arg);
-  
-  if (sp == 0.0f && arg[0] != '0')
-  {
-    sendInvalidArg();
-    return;
-  }
-
-  th.setSetPoint(sp);
-
-  sys.sp = sp;  
-  writeSystem();
-
-  sendTemperature();
-}
-
-void sendSetPoint()
-{
-  Serial << "sp " << th.setPoint() << endl;
-}
-
-// --------------------------------------------------------------------
-// schedule
-
-void sendSchedules()
-{
-  sch.printSchedule();
-}
-
-// --------------------------------------------------------------------
-// scheduletimers
-
-void sendScheduleTimers()
-{
-  sch.printTimers();
-}
-
 // ====================================================================
 
 // Temperature Sensor
 
-void onTemperatureChanged()
+void onTemperatureUpdated()
 {
-  if (th.temperature() < -273.15)
+#ifdef NOTEMP
+  th.setTemperature(37.6);
+#else
+  if (th.error())
     err = TemperatureSensor;
-
-  //sendTemperature();
+#endif
 }
 
 // ====================================================================
@@ -631,15 +404,17 @@ void setPumpRelays(int safety, int pump, int heat)
   digitalWrite(relays.safety, safety);
   digitalWrite(relays.pump, pump);
   digitalWrite(relays.heat, heat);
-
-  sendRelays();
+  
+  pad.d.safety = (safety == 0);
+  pad.d.pump = (pump == 0);
+  pad.d.heat = (heat == 0);
 }
 
 void setAuxRelay(int aux)
 {
   digitalWrite(relays.aux, aux);
 
-  sendRelays();
+  pad.d.aux = (aux == 0);
 }
 
 // ====================================================================
@@ -657,26 +432,33 @@ void setupIO()
 
 void checkWaterLevel()
 {
+#ifdef NOWATER
+  return;
+#else
   ls.value = analogRead(ls.in);
-  
+
   if (ls.value > ls.threshold)
     return;
-    
+
   if (!err)
   {
     err = WaterLevelSensor;
     mode.error.immediateTransition();
     //sendStates();
   }
+#endif
 }
 
 void checkHighLimit()
 {
+#ifdef NOHIGHLIMIT
+  return;
+#else
   hl.value = analogRead(hl.in);
-  
+
   if (hl.value < hl.threshold)
     return;
-    
+
   if (!pump.heat.current())
     return;
 
@@ -684,8 +466,8 @@ void checkHighLimit()
   {  
     err = HighLimit;
     mode.error.immediateTransition();
-    //sendStates();
   }
+#endif
 }
 
 // ====================================================================
@@ -696,10 +478,12 @@ void enterModeError()
 {
   if (!pump.error.current())
     pump.error.immediateTransition();
-    
+
   if (!aux.off.current())
     aux.off.immediateTransition();
-    
+
+  menu.error.transition();
+
   el.setRate(100UL);
   el.blinkPattern((byte)err, 100UL);
 }
@@ -710,12 +494,18 @@ void enterModeError()
 
 void enterModeInit()
 {
-  setupSerialCommands();
+  menu.mode.transition();
 
   setupRelays();
 
-  th.setup(sys.sp);
-  
+  if (!th.setup(sys.sp))
+  {
+#ifdef NOTEMP
+#else
+    //err = TemperatureSensor;
+#endif
+  }
+
   el.blinkPattern((byte)1, 300UL);
 
   if (err)
@@ -728,9 +518,6 @@ void updateModeInit()
     return;
 
   mode.off.transition();
-  //mode.autoheat.transition();
-  //pump.off.transition();
-  //aux.off.transition();
 }
 
 void exitModeInit()
@@ -746,42 +533,33 @@ void enterModeOff()
 {
   pump.off.transition();
   aux.off.transition();
-  
+  menu.mode.transition();
+
   el.Off();
-}
-
-// --------------------------------------------------------------------
-
-// Filter
-
-void enterModeFilter()
-{
-  sch.manual(rapidHeatDuration);
-  pump.on.transition();
-}
-
-void exitModeFilter()
-{
-  sch.reset();
 }
 
 // --------------------------------------------------------------------
 
 // AutoHeat
 
+void enterModeAutoHeat()
+{
+  menu.mode.transition();
+}
+
 void updateModeAutoHeat()
 {
   ePump p = pOff;
-  
+
   if (sch.dutyState() != dsOver)
   {
     p = (th.triggerState() == tsLow && !aux.on.current())
       ? pHeat : pOn;
   }
-  
+
   if (_pump[p].current())
     return;
-  
+
   _pump[p].transition();
 }
 
@@ -797,13 +575,13 @@ void enterModeRapidHeat()
 void updateModeRapidHeat()
 { 
   if (sch.dutyState() == dsOver ||
-      th.triggerState() == tsHigh ||
-      aux.on.current())
+    th.triggerState() == tsHigh ||
+    aux.on.current())
   {
     mode.autoheat.transition();
     return;
   }
-  
+
   pump.heat.transition();
 }
 
@@ -826,14 +604,14 @@ void updateModeSoak()
     mode.autoheat.transition();
     return;
   }
-  
+
   if (th.triggerState() == tsHigh || 
-      aux.on.current())
+    aux.on.current())
   {
     pump.on.transition();
     return;
   }
-  
+
   pump.heat.transition();
 }
 
@@ -873,7 +651,7 @@ void enterPumpHeat()
     pump.on.immediateTransition();
     return;
   }
-      
+
   setPumpRelays(1, 1, 1);
   sch.startDutyTimer();
 }
@@ -893,7 +671,7 @@ void toggleAux()
 void enterAuxOff()
 {
   setAuxRelay(0);
-  sendRelays();
+  //sendRelays();
 }
 
 void enterAuxOn()
@@ -902,64 +680,240 @@ void enterAuxOn()
     pump.on.immediateTransition();
 
   setAuxRelay(1);
-  sendRelays();
+  //sendRelays();
 }
 
 // ====================================================================
-// Test
 
-void onTestPin()
+// Menu FSM Handlers
+
+void menuTimeout(void*)
 {
-  char *arg = cmd.next();
-
-  if (!arg)
-  {
-    Serial << "huh?" << endl;
+  if (menu.timer.current() && mode.soak.current())
     return;
-  }
+  
+  menu.mode.transition();
+}
 
-  int p = strtol(arg, NULL, 10);
+int menuTimeoutId = -1;
 
-  if ((p <= 0 && strcmp(arg, "0")) || p >= NUM_PINS)
+void navigateMenu()
+{ 
+  if (pad.buttonChanged)
   {
-    sendInvalidArg();
-    return;
+    if (pt.isEnabled(menuTimeoutId))
+      pt.restartTimer(menuTimeoutId);
+    else
+      menuTimeoutId = pt.setTimeout(15000, menuTimeout);
+
+    State *menu = fsm.menu.currentState();
+    State *nextMenu = NULL;
+
+    if (buttons.left.down())
+      nextMenu = menu->previous();
+    else if (buttons.right.down())
+      nextMenu = menu->next();
+        
+    if (nextMenu)
+      nextMenu->transition();
   }
-  
-  digitalWrite(tp[tpc], LOW);
-  
-  tpc = p;
 }
 
-void beginTest()
+void enterMenuError()
 {
-  sys.magic = TEST;
-  writeSystem();
-
-  softReset();
+  pad.seg.encodeString(errStr[(byte)err]);
 }
 
-void updateTest(void*)
+bool errorLeft = false;
+bool errorRight = false;
+
+void updateMenuError()
 {
-  int p = tp[tpc];
-  int v = !digitalRead(p);
-  
-  Serial << "tp"
-  << " " << tpc
-  << " " << p 
-  << " " << v
-  << endl;
-  
-  digitalWrite(p, v);
+  if (buttons.incr.down())
+    softReset();  
 }
 
-void endTest()
+void enterMenuMode()
 {
-  sys.magic = RUN;
-  writeSystem();
-  
-  softReset();
 }
+
+void updateMenuMode()
+{
+  byte modeIndex = fsm.mode.currentState()->index();
+  pad.seg.encodeString(modeStr[modeIndex]);
+  
+  State *mode = fsm.mode.currentState();
+  State *nextMode = NULL;
+  
+  if (buttons.incr.down())
+    nextMode = mode->next();
+  else if (buttons.decr.down())
+    nextMode = mode->previous();
+    
+  if (nextMode)
+    nextMode->transition();
+}
+
+bool editSetpoint = false;
+
+void enterMenuSetpoint()
+{
+  editSetpoint = false;
+}
+
+void updateMenuSetpoint()
+{
+  if (!editSetpoint)
+  {
+    pad.seg.setFloat(th.temperature());
+    
+    editSetpoint = buttons.incr.down() || buttons.decr.down();
+  }
+  else
+  {
+    pad.seg.setFloat(th.setPoint());
+    
+    bool edited = false;
+    
+    if (buttons.decr.down())
+    {
+      th.setSetPoint(th.setPoint() - 0.1);
+      edited = true;
+    }
+
+    if (buttons.incr.down())
+    {
+      th.setSetPoint(th.setPoint() + 0.1);
+      edited = true;
+    }
+    
+    if (edited)
+    {
+      sys.sp = th.setPoint();
+      writeSystem();
+    }
+  }
+}
+
+void enterMenuTimer()
+{
+}
+
+bool menuTimerBlink = false;
+
+void onMenuTimerBlink(void*)
+{
+  menuTimerBlink = !menuTimerBlink;
+}
+
+void updateMenuTimer()
+{
+  if (!mode.soak.current())
+  {
+    pad.seg.encodeString("---");
+  }
+  else
+  {
+    pad.seg.setTimer(sch.remaining(), menuTimerBlink);
+    
+    if (buttons.incr.down())
+    {
+      sch.manual(soakDuration);
+    }
+  }
+}
+
+void enterMenuBlower()
+{
+  pad.seg.encodeString("BL. ");
+}
+
+void updateMenuBlower()
+{
+  pad.seg.setSwitch(aux.on.current());
+  
+  if (buttons.incr.down() && aux.off.current())
+    aux.on.transition();
+    
+  if (buttons.decr.down() && aux.on.current())
+    aux.off.transition();
+}
+
+void enterMenuFootwell()
+{
+  pad.seg.encodeString("FT. ");
+}
+
+void updateMenuFootwell()
+{
+  pad.seg.setSwitch(pad.d.footwell);
+  
+  if (buttons.incr.down() && !pad.d.footwell)
+    pad.d.footwell = HIGH;
+
+  if (buttons.decr.down() && pad.d.footwell)
+    pad.d.footwell = LOW;
+}
+
+void enterMenuSteps()
+{
+  pad.seg.encodeString("ST. ");
+}
+
+void updateMenuSteps()
+{
+  pad.seg.setSwitch(pad.d.steps);
+  
+  if (buttons.incr.down() && !pad.d.steps)
+    pad.d.steps = HIGH;
+
+  if (buttons.decr.down() && pad.d.steps)
+    pad.d.steps = LOW;
+}
+
+void enterMenuHead()
+{
+  pad.seg.encodeString("HD. ");
+}
+
+void updateMenuHead()
+{
+  pad.seg.setSwitch(pad.d.head);
+  
+  if (buttons.incr.down() && !pad.d.head)
+    pad.d.head = HIGH;
+
+  if (buttons.decr.down() && pad.d.head)
+    pad.d.head = LOW;
+}
+
+void enterMenuPath()
+{
+  pad.seg.encodeString("PT. ");
+}
+
+void updateMenuPath()
+{
+  pad.seg.setSwitch(pad.d.path);
+  
+  if (buttons.incr.down() && !pad.d.path)
+    pad.d.path = HIGH;
+
+  if (buttons.decr.down() && pad.d.path)
+    pad.d.path = LOW;
+}
+
+void enterMenuReset()
+{
+  pad.seg.encodeString("RST");
+}
+
+void updateMenuReset()
+{
+  if (buttons.incr.down())
+    softReset();
+}
+
 
 // ====================================================================
 // Setup
@@ -969,27 +923,21 @@ void softReset()
   setPumpRelays(0, 0, 0);
   setAuxRelay(0);
   
+  Timer1.detachInterrupt();
+
   asm volatile ("  jmp 0");
 }
 
 void readSystem()
 {
   int bytes = EEPROM_readAnything(0, sys);
-  
-  Serial << "sys"
-  << " " << bytes
-  << " " << sys.magic
-  << " " << sys.sp
-  << endl;
-  
+
   if (sys.magic == 23 || sys.magic == 42)
     return;
 
-  Serial << "no magic, writing defaults to eeprom" << endl;
-  
   sys.magic = 42;
   sys.sp = 20.0f;
-  
+
   writeSystem();
 }
 
@@ -998,80 +946,60 @@ void writeSystem()
   EEPROM_writeAnything(0, sys);
 }
 
-void testSetup()
-{
-  setupTestSerialCommands();
-  
-  for (int i = 0; i < NUM_PINS; ++i)
-    pinMode(tp[i], OUTPUT);
-  
-  tt.setInterval(2000, updateTest);
-}
-
 void setup(void)
 {
-  Serial.begin(9600);
-  
   readSystem();
-  
-  if (sys.magic == TEST)
-    return testSetup();
-  
-  Serial << "ok, give me bubbles!" << endl;
-  
+
   RTC.set33kHzOutput(false);
   RTC.clearAlarmFlag(3);
-  
-  setupIO();
-  
-  setupFSMs();
 
+  setupIO();
+
+  setupFSMs();
+  
   setSyncProvider(RTC.get);
 
-  mode.init.transition();
-  
-  pt.setInterval(5, updatePad);
-  pad.setup();
-  //pad.seg.setValue(555);
-  pad.seg.encodeString("37.4");
-  
-  Serial << "TS " << timeStatus() << endl;
+  if (!RTC.available())
+    err = Clock;
 
-  Serial << "SRAM " << freeRam() << " bytes" << endl;  
+  pad.setup();
+  //pt.setInterval(5, updatePad);
+  pt.setInterval(500, onMenuTimerBlink);
+  
+  Timer1.initialize(5000);
+  Timer1.attachInterrupt(padISR);
+
+  mode.init.transition();
 }
 
 // Main
 
-void testLoop()
-{
-    tt.run();
-
-    cmd.readSerial();
-}
-
-void updatePad(void*)
+//void updatePad(void*)
+void padISR()
 {
   pad.update();
 }
 
 void loop(void)
 {
-  if (sys.magic == TEST)
-    return testLoop();
-  
-  //checkWaterLevel();
-  //checkHighLimit();
-  
-  //el.update();
-  
-  //th.update();
-  
-  //sch.update();
-  
-  pt.run();
+  checkWaterLevel();
+  checkHighLimit();
 
+  th.update();
+
+  el.update();
+
+  sch.update();
+
+  pt.run();
+  
+  pad.updateButtons();
+  
+  navigateMenu();
+  
   for (byte i = 0; i < _fsm.count; ++i)
     _fsm[i].update();
-
-  cmd.readSerial();
+    
+  pad.clearButtonEvents();
 }
+

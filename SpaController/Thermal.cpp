@@ -1,9 +1,9 @@
 #include "Thermal.h"
-#include "Streaming.h"
 #include "Utils.h"
 
 Thermal::Thermal(char pin, ThermalCallback callback)
-: _callback(callback)
+: _err(false)
+, _callback(callback)
 , _t0(-273.5f)
 , _t1(-273.5f)
 , _tm(_t0)
@@ -15,6 +15,11 @@ Thermal::Thermal(char pin, ThermalCallback callback)
 {
 }
 
+bool Thermal::error()
+{
+  return _err;
+}
+
 bool Thermal::setup(float sp)
 {
   _sp = sp;
@@ -24,6 +29,7 @@ bool Thermal::setup(float sp)
   if (!_sensor.getAddress(_address, 0))
   {
     _t0 = _tm = -274.0f;
+    _err = true;
     return false;
   }
 
@@ -38,7 +44,20 @@ bool Thermal::setup(float sp)
 
 void Thermal::setSetPoint(float sp)
 {
-  _sp = sp;
+  if (sp < 20.0)
+    _sp = 20.0;
+  else if (sp > 40.0)
+    _sp = 40.0;
+  else
+    _sp = sp;
+    
+  if (_t0 > _sp)
+    _ts = tsHigh;
+    
+  if (_t0 < _sp)
+    _ts = tsLow;
+    
+  
   _ts = tsLow;
 }
 
@@ -50,6 +69,12 @@ void Thermal::update()
     return;
 
   _next = m + TS_INTERVAL;
+  
+  if (_err)
+  {
+    _callback();
+    return;
+  }
   
   _tm = _sensor.getTempCByIndex(0);
   _sensor.requestTemperatures();

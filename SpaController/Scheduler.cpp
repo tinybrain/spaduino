@@ -3,34 +3,6 @@
 
 #define h(_x) (_x * SECS_PER_HOUR)
 
-char fmtbuff[12];
-
-char* dec2(char *p, byte value)
-{
-  *p++ = '0' + value / 10;
-  *p++ = '0' + value % 10;
-  return p;
-}
-
-char* digital(time_t t, boolean showSecs)
-{
-  char *p = fmtbuff;
-  
-  p = dec2(p, hour(t));
-  *p++ = ':';
-  p = dec2(p, minute(t));
-
-  if (showSecs)
-  {
-    *p++ = ':';
-    p = dec2(p, second(t));
-  }
-  
-  *p++ = 0;
-
-  return fmtbuff;
-}
-
 Scheduler::Scheduler
   ( ScheduleItem *items
   , int count
@@ -44,67 +16,8 @@ Scheduler::Scheduler
 , _manualDuration(0)
 {}
 
-void Scheduler::printSchedule()
-{
-  update();
-  
-  Serial << "clk"
-  << " " << dayStr(weekday())
-  << " " << day()
-  << " " << monthStr(month())
-  << " " << year()
-  << " " << digital(now(), false)
-  << endl;
-  
-  for (int i = 0; i < _count; ++i)
-  {
-    ScheduleItem &si = _items[i];
-    
-    Serial << "sci"
-    << " " << digital(si.startTime, false)
-    << " " << digital(si.endTime, false)
-    << " " << digital(si.period, false)
-    << " " << digital(si.minDuty, true)
-    << " " << digital(si.maxDuty, true);
-    
-    for (int j = 1; j < 8; ++j)
-    {
-      if ((1 << j) & si.weekdays)
-        Serial << " " << dayShortStr(j);
-    }
-      
-    if (&si == _currentItem)
-      Serial << " **";
-      
-    Serial << endl;
-  }
-}
-
-void Scheduler::printTimers()
-{
-  update();
-  
-  if (_currentItem)
-  {
-    Serial << "stm"
-           << " " << _currentItem->period
-           << " " << _currentItem->minDuty
-           << " " << _currentItem->maxDuty
-           << " " << _cycleStart
-           << " " << _manualDuration
-           << " " << cycleElapsed()
-           << " " << dutyElapsed()
-           << " " << dutyState()
-           << endl;
-  }
-
-  //Serial << "cs " << _cycleStart << " ds " << _dutyStart << " da " << _dutyAccum << endl;
-}
-
 void Scheduler::reset()
 {
-  Serial << "rst" << endl;
-  
   _cycleStart = now();
   _dutyStart = 0;
   _dutyAccum = 0;
@@ -118,6 +31,14 @@ void Scheduler::manual(long duration)
   _manualDuration = duration;
   
   startDutyTimer();
+}
+
+time_t Scheduler::remaining()
+{
+  if (!_manualDuration)
+    return 0;
+    
+  return _manualDuration - cycleElapsed();
 }
 
 time_t Scheduler::cycleElapsed()

@@ -1,7 +1,8 @@
 #ifndef MULTIPLEX7SEG_H
 #define MULTIPLEX7SEG_H
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <Time.h>
 #include "Utils.h"
 
 #ifndef MAX_DIGITS
@@ -14,11 +15,13 @@ public:
 
   Multiplex7Seg(ByteArray &digitMap_, ByteArray &segmentMap_, ByteArray &segmentLUT_);
   
-  void mapSegments(byte &segments);
-  void mapCharacter(byte &c);
+  byte mapSegments(byte segments);
+  byte mapCharacter(byte c);
   void encodeString(char *s);
   void setValue(int value);
-  void setTestSegment(byte segment);
+  void setFloat(float value);
+  void setTimer(time_t secs, bool dot);
+  void setSwitch(int value);
   
   void nextDigit(byte &U1, byte &U2);
   

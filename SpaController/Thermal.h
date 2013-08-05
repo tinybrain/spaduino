@@ -6,7 +6,7 @@
 
 #define TS_RESOLUTION 12
 //#define TS_INTERVAL (750 / 1 << (12 - TS_RESOLUTION))
-#define TS_INTERVAL 1000
+#define TS_INTERVAL (750 / 1 << (12 - TS_RESOLUTION))
 
 typedef void (*ThermalCallback)();
 
@@ -15,11 +15,13 @@ enum eHeatTriggerState { tsLow, tsHigh };
 class Thermal
 {
 public:
-  
+
   Thermal(char pin, ThermalCallback callback);
 
+  bool error();
   bool setup(float sp);
 
+  void setTemperature(float t) { _t0 = t; }
   float temperature() { return _t0; }
 
   float setPoint() { return _sp; }
@@ -34,6 +36,8 @@ public:
   void service();
 
 protected:
+
+  bool _err;
 
   ThermalCallback _callback;
   ThermalCallback _error;

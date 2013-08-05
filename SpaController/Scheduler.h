@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <Time.h>
-#include <Streaming.h>
 
 enum eDutyState { dsUnder, dsMet, dsOver };
 
@@ -43,7 +42,9 @@ class Scheduler
 
   ScheduleItem& itemForTime(time_t time);
     
-  void update();  
+  void update();
+
+  time_t remaining();  
 
   time_t cycleElapsed();
   time_t dutyElapsed();
@@ -53,7 +54,7 @@ class Scheduler
 
   eDutyState dutyState();
   
-protected:
+//protected:
 
   ScheduleItem *_items;
   int _count;
