@@ -26,19 +26,19 @@
 
  Pins
  ----
- 
+
  0    Error     -            3
  1    1-Wire    25 (PC2)    12    Brown
- 2    Safety    16 (PB2)    11    Red            
+ 2    Safety    16 (PB2)    11    Red
  3    Pump      14 (PD7)     9    Orange
  4    Heat      13 (PB0)     8    Yellow
  5    Aux       12 (PD6)     6    Green
  6    WL In     23 (PC0)    A0    White
  7    WL Out    27 (PC4)    A1    Blue'
  8    HL In     28 (PC5)    A2    Orange'
- 
+
  x    GND        7         GND    Black
- 
+
  VCC        8                Blue
  AREF      21
  */
@@ -47,17 +47,17 @@
 
 /*
 #define ERR_LED      3
- 
+
  #define RLY_SAFETY  11
  #define RLY_PUMP     9
  #define RLY_HEAT     8
  #define RLY_AUX      6
- 
+
  #define WL_OUT      A1
- 
+
  #define WL_IN       A0
  #define HL_IN       A2
- 
+
  #define ONE_WIRE    12
  */
 
@@ -130,7 +130,8 @@ ScheduleItem scheduleItems[] =
   {   Weekdays   , hr(20) , hr(22) , hr(1)  , 0      , 0       },
   {   Weekdays   , hr(7)  , hr(13) , hr(1)  , 0      , 0       },
 
-  // Peak - 1pm to 8pm Mon-Fri  { Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0     },
+  // Peak - 1pm to 8pm Mon-Fri
+  {   Weekdays   , hr(13) , hr(20) , hr(1)  , 0      , 0       },
 
   // Default (Off Peak)
   {   AllWeek    , hr(00) , hr(24) , hr(1)  , mn(5) , hr(1)    },
@@ -155,7 +156,7 @@ Status errDisplay = Ok;
 
 SyncLED el(ERR_LED, LOW, false, 300UL);
 
-char *errStr[] = 
+char *errStr[] =
 {
   "  ", "ERR", "RTC", "TPS ", "H20", "CUR"
 };
@@ -211,7 +212,7 @@ struct Relays
   byte safety, pump, heat, aux;
 };
 
-Relays relays = 
+Relays relays =
 {
   RLY_SAFETY, RLY_PUMP, RLY_HEAT, RLY_AUX
 };
@@ -240,7 +241,7 @@ struct Mode
   State error, init, off, autoheat, soak, rapidheat;
 };
 
-Mode mode = 
+Mode mode =
 {
   State(enterModeError),
   State(enterModeInit, updateModeInit, exitModeInit),
@@ -262,7 +263,7 @@ char *modeStr[] =
 // Pump FSM
 
 enum ePump
-{ 
+{
   pError, pOff, pOn, pHeat
 };
 
@@ -333,24 +334,24 @@ void setupFSMs()
   fsm.pump.setup(1, _pump.count, _pump.data);
   fsm.aux.setup(2, _aux.count, _aux.data);
   fsm.menu.setup(3, _menu.count, _menu.data);
-  
+
   // mode links
-  
+
   mode.off.link(NULL, &mode.autoheat);
   mode.autoheat.link(&mode.off, &mode.soak);
   mode.soak.link(&mode.autoheat, &mode.rapidheat);
   mode.rapidheat.link(&mode.soak, NULL);
-  
+
   // menu links
-  
+
   for (int i = 1; i < _menu.count; ++i)
   {
     int p = i - 1;
     if (p == 0) p = _menu.count - 1;
-    
+
     int n = i + 1;
     if (n == _menu.count) n = 1;
-    
+
     _menu[i].link(&_menu[p], &_menu[n]);
   }
 }
@@ -404,7 +405,7 @@ void setPumpRelays(int safety, int pump, int heat)
   digitalWrite(relays.safety, safety);
   digitalWrite(relays.pump, pump);
   digitalWrite(relays.heat, heat);
-  
+
   pad.d.safety = (safety == 0);
   pad.d.pump = (pump == 0);
   pad.d.heat = (heat == 0);
@@ -463,7 +464,7 @@ void checkHighLimit()
     return;
 
   if (!err)
-  {  
+  {
     err = HighLimit;
     mode.error.immediateTransition();
   }
@@ -573,7 +574,7 @@ void enterModeRapidHeat()
 }
 
 void updateModeRapidHeat()
-{ 
+{
   if (sch.dutyState() == dsOver ||
     th.triggerState() == tsHigh ||
     aux.on.current())
@@ -605,7 +606,7 @@ void updateModeSoak()
     return;
   }
 
-  if (th.triggerState() == tsHigh || 
+  if (th.triggerState() == tsHigh ||
     aux.on.current())
   {
     pump.on.transition();
@@ -633,7 +634,7 @@ void enterPumpError()
 }
 
 void enterPumpOff()
-{  
+{
   setPumpRelays(1, 0, 0);
   sch.stopDutyTimer();
 }
@@ -641,7 +642,7 @@ void enterPumpOff()
 void enterPumpOn()
 {
   setPumpRelays(1, 1, 0);
-  sch.startDutyTimer();  
+  sch.startDutyTimer();
 }
 
 void enterPumpHeat()
@@ -691,14 +692,14 @@ void menuTimeout(void*)
 {
   if (menu.timer.current() && mode.soak.current())
     return;
-  
+
   menu.mode.transition();
 }
 
 int menuTimeoutId = -1;
 
 void navigateMenu()
-{ 
+{
   if (pad.buttonChanged)
   {
     if (pt.isEnabled(menuTimeoutId))
@@ -713,7 +714,7 @@ void navigateMenu()
       nextMenu = menu->previous();
     else if (buttons.right.down())
       nextMenu = menu->next();
-        
+
     if (nextMenu)
       nextMenu->transition();
   }
@@ -730,7 +731,7 @@ bool errorRight = false;
 void updateMenuError()
 {
   if (buttons.incr.down())
-    softReset();  
+    softReset();
 }
 
 void enterMenuMode()
@@ -741,15 +742,15 @@ void updateMenuMode()
 {
   byte modeIndex = fsm.mode.currentState()->index();
   pad.seg.encodeString(modeStr[modeIndex]);
-  
+
   State *mode = fsm.mode.currentState();
   State *nextMode = NULL;
-  
+
   if (buttons.incr.down())
     nextMode = mode->next();
   else if (buttons.decr.down())
     nextMode = mode->previous();
-    
+
   if (nextMode)
     nextMode->transition();
 }
@@ -766,15 +767,15 @@ void updateMenuSetpoint()
   if (!editSetpoint)
   {
     pad.seg.setFloat(th.temperature());
-    
+
     editSetpoint = buttons.incr.down() || buttons.decr.down();
   }
   else
   {
     pad.seg.setFloat(th.setPoint());
-    
+
     bool edited = false;
-    
+
     if (buttons.decr.down())
     {
       th.setSetPoint(th.setPoint() - 0.1);
@@ -786,7 +787,7 @@ void updateMenuSetpoint()
       th.setSetPoint(th.setPoint() + 0.1);
       edited = true;
     }
-    
+
     if (edited)
     {
       sys.sp = th.setPoint();
@@ -815,7 +816,7 @@ void updateMenuTimer()
   else
   {
     pad.seg.setTimer(sch.remaining(), menuTimerBlink);
-    
+
     if (buttons.incr.down())
     {
       sch.manual(soakDuration);
@@ -831,10 +832,10 @@ void enterMenuBlower()
 void updateMenuBlower()
 {
   pad.seg.setSwitch(aux.on.current());
-  
+
   if (buttons.incr.down() && aux.off.current())
     aux.on.transition();
-    
+
   if (buttons.decr.down() && aux.on.current())
     aux.off.transition();
 }
@@ -847,7 +848,7 @@ void enterMenuFootwell()
 void updateMenuFootwell()
 {
   pad.seg.setSwitch(pad.d.footwell);
-  
+
   if (buttons.incr.down() && !pad.d.footwell)
     pad.d.footwell = HIGH;
 
@@ -863,7 +864,7 @@ void enterMenuSteps()
 void updateMenuSteps()
 {
   pad.seg.setSwitch(pad.d.steps);
-  
+
   if (buttons.incr.down() && !pad.d.steps)
     pad.d.steps = HIGH;
 
@@ -879,7 +880,7 @@ void enterMenuHead()
 void updateMenuHead()
 {
   pad.seg.setSwitch(pad.d.head);
-  
+
   if (buttons.incr.down() && !pad.d.head)
     pad.d.head = HIGH;
 
@@ -895,7 +896,7 @@ void enterMenuPath()
 void updateMenuPath()
 {
   pad.seg.setSwitch(pad.d.path);
-  
+
   if (buttons.incr.down() && !pad.d.path)
     pad.d.path = HIGH;
 
@@ -916,13 +917,14 @@ void updateMenuReset()
 
 
 // ====================================================================
+
 // Setup
 
 void softReset()
 {
   setPumpRelays(0, 0, 0);
   setAuxRelay(0);
-  
+
   Timer1.detachInterrupt();
 
   asm volatile ("  jmp 0");
@@ -956,7 +958,7 @@ void setup(void)
   setupIO();
 
   setupFSMs();
-  
+
   setSyncProvider(RTC.get);
 
   if (!RTC.available())
@@ -965,12 +967,14 @@ void setup(void)
   pad.setup();
   //pt.setInterval(5, updatePad);
   pt.setInterval(500, onMenuTimerBlink);
-  
+
   Timer1.initialize(5000);
   Timer1.attachInterrupt(padISR);
 
   mode.init.transition();
 }
+
+// ====================================================================
 
 // Main
 
@@ -992,14 +996,13 @@ void loop(void)
   sch.update();
 
   pt.run();
-  
+
   pad.updateButtons();
-  
+
   navigateMenu();
-  
+
   for (byte i = 0; i < _fsm.count; ++i)
     _fsm[i].update();
-    
+
   pad.clearButtonEvents();
 }
-
