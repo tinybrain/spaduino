@@ -1,7 +1,7 @@
 spaduino
 ========
 
-spaduino is a hot tub controller implemented using an arduino UNO compatible controller. It was used as aΩ drop-in MCU replacement for a Spa Quip SP500AMKI, manufactured by Spa Quip/Davey in New Zealand.
+spaduino is a hot tub controller implemented using an arduino UNO compatible controller. It was used as a drop-in MCU replacement for a Spa Quip SP500AMKI, manufactured by Spa Quip/Davey in New Zealand.
 
 I really can't stress enough how much anyone reading this should regard this project as **INFORMATIONAL ONLY**, and should not under **ANY** circumstances attempt anything remotely similar. This project involves rediculous quantities of both high pressure water and high current electricity in potentially **LETHAL** proximity.
 
