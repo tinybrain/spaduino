@@ -30,20 +30,20 @@ The controller can be started in a pin-assignment mode which basically flips eac
 
   - Error LED: `ERR_LED`
   - Piezo alarm: `PAD_PZ`
-  - Three digit 7 segment LED display via external shift.
+  - Three digit 7 segment LED display via external shift
 registers: `SHR_LATCH` `SHR_DATA` `SHR_CLK`.
   - Navigation buttons: `PAD_LEFT` `PAD_RIGHT` `PAD_UP` `PAD_DOWN`
 
 
-* [Maxim DS3232 RTC][maxim-ds3232] on a [module][ft-rtc]: `I2C_SDA` `I2C_SCL`
-
-### 3. Sensors
+* RTC - [Maxim DS3232][maxim-ds3232] on a [module][ft-rtc]: `I2C_SDA` `I2C_SCL`
 
 * Water Level - IR LED transmitter and photodiode receiver: `WL_OUT` `WL_IN`
 
-* High Limit Sense - H11AA1 optocoupler for sensing current through the heating element: `HL_IN`.
+* High Limit Sense - [vishay-h11aa1][H11AA1 Optocoupler] for current sensing through the heating element: `HL_IN`.
 
-* Digital Temperature - Dallas Semiconductor DS1820: `ONE_WIRE`.
+* Digital Thermometer - [maxim-ds18s20][Maxim DS1820 1-Wire] : `ONE_WIRE`.
+
+* Four channel FET driver on a [module][ft-fet] for switching external lighting.
 
 ### 4. Power Relays
 
@@ -239,4 +239,9 @@ The schedule is defined as an array of schedule items, each consisting
 [schpdf]: https://github.com/tinybrain/spaduino-schematics/raw/master/sp500-tinybrain-combined.pdf
 
 [maxim-ds3232]: https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3232.html
+[maxim-ds18s20]: hhttps://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html
+
 [ft-rtc]: http://www.freetronics.com.au/collections/modules/products/real-time-clock-rtc-module
+[ft-fet]: https://www.freetronics.com.au/collections/modules/products/relay4-4-channel-relay-driver-module
+
+[vishay-h11aa1]: https://www.vishay.com/optocouplers/list/product-83608/
