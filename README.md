@@ -94,7 +94,7 @@ The controller's primary and "high level" state, corresponding to the various us
 
   The default idle state, during which operation is determined via the scheduler and thermal control.
 
-* `RPD`:`Mode.apidheat`
+* `RPD`:`Mode.Rapidheat`
 
   A 24hr cycle during which thermal regulation takes priority over any scheduling rules. This is for bringing the water back to temperature after changing out the water.
 
