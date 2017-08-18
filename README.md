@@ -39,9 +39,9 @@ registers: `SHR_LATCH` `SHR_DATA` `SHR_CLK`.
 
 * Water Level - IR LED transmitter and photodiode receiver: `WL_OUT` `WL_IN`
 
-* High Limit Sense - [vishay-h11aa1][H11AA1 Optocoupler] for current sensing through the heating element: `HL_IN`.
+* High Limit Sense - [Vishay H11AA1 Optocoupler][vishay-h11aa1] for current sensing through the heating element: `HL_IN`.
 
-* Digital Thermometer - [maxim-ds18s20][Maxim DS1820 1-Wire] : `ONE_WIRE`.
+* Digital Thermometer - [Maxim DS1820 1-Wire][maxim-ds18s20] : `ONE_WIRE`.
 
 * Four channel FET driver on a [module][ft-fet] for switching external lighting.
 
@@ -237,11 +237,8 @@ The schedule is defined as an array of schedule items, each consisting
 [sl]: https://github.com/tinybrain/spaduino/tree/master/Slimer
 [sch]: https://github.com/tinybrain/spaduino-schematics/
 [schpdf]: https://github.com/tinybrain/spaduino-schematics/raw/master/sp500-tinybrain-combined.pdf
-
 [maxim-ds3232]: https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3232.html
+[ft-rtc]: http://www.freetronics.com.au/collections/modules/products/real-time-clock-rtc-module/
 [maxim-ds18s20]: hhttps://www.maximintegrated.com/en/products/analog/sensors-and-sensor-interface/DS18S20.html
-
-[ft-rtc]: http://www.freetronics.com.au/collections/modules/products/real-time-clock-rtc-module
-[ft-fet]: https://www.freetronics.com.au/collections/modules/products/relay4-4-channel-relay-driver-module
-
 [vishay-h11aa1]: https://www.vishay.com/optocouplers/list/product-83608/
+[ft-fet]: https://www.freetronics.com.au/collections/modules/products/relay4-4-channel-relay-driver-module
