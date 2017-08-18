@@ -13,6 +13,12 @@ The project consists of three applications:
 
 * [**Slimer**][sl] is an iOS frontend also used during the first phase. It connected to the SpaServer using Google Protocol Buffers over TCP using NSStream, and provided an interface for system interaction and status display.
 
+Schematics I used to grok the original design are available separately:
+
+* gEDA/gaf sources: [tinybrain/spaduino-schematics][sch]
+
+* Combined PDF: [sp500-tinybrain-combined.pdf][schpdf].
+
 SpaController
 -------------
 
@@ -46,128 +52,128 @@ SpaController
 
   Each of the four power relays uses a +5V GPIO line connected to a ULN2803 darlington array. The array outputs a high current +12V signal which drives the relay coils.
 
-    * `RLY_SAFETY`
+  * `RLY_SAFETY`
 
     A master relay supplying the other relays. When entering an error state, driving this line provides additional protection against electrical failures where the other power relays fail to open.
 
-    * `RLY_PUMP`
+  * `RLY_PUMP`
 
     Supplies the main pump induction motor (1.6kW).
 
-    * `RLY_HEAT`
+  * `RLY_HEAT`
 
     Supplies the heating element (2kW), and is wired to the output of `RLY_PUMP` (see `Pump.Heat` 5.2).
 
-    * `RLY_AUX`
+  * `RLY_AUX`
 
     Supplies an auxiliary blower induction motor (700W).
 
-4. **Finite State Machines**
+5. **Finite State Machines**
 
   5.1 `Mode`
 
-  The controller's primary and "high level" state, corresponding to the various user selectable modes and error states.
+    The controller's primary and "high level" state, corresponding to the various user selectable modes and error states.
 
     * `ERR`:`Error`
 
-    A fatal error produced by sensor failure or limits. The displayed error codes are:
+      A fatal error produced by sensor failure or limits. The displayed error codes are:
 
-    `___`:`Unknown`
-    `CLK`:`Clock` (i.e. RTC)
-    `TPS`:`TemperatureSensor`
-    `H20`:`WaterLevelSensor`
-    `CUR`:`HighLimit`
+      `___`:`Unknown`
+      `CLK`:`Clock` (i.e. RTC)
+      `TPS`:`TemperatureSensor`
+      `H20`:`WaterLevelSensor`
+      `CUR`:`HighLimit`
 
     * `INI`:`Init`
 
-    Entry state, during which sensors and peripherals are configured.
+      Entry state, during which sensors and peripherals are configured.
 
     * `OFF`:`Off`
 
-    Idle state with all sensors peripherals initialised.
+      Idle state with all sensors peripherals initialised.
 
     * `AUT`:`Autoheat`
 
-    The default idle state, during which operation is determined via the scheduler and thermal control.
+      The default idle state, during which operation is determined via the scheduler and thermal control.
 
     * `RPD`:`Rapidheat`
 
-    A 24hr cycle during which thermal regulation takes priority over any scheduling rules. This is for bringing the water back to temperature after changing out the water.
+      A 24hr cycle during which thermal regulation takes priority over any scheduling rules. This is for bringing the water back to temperature after changing out the water.
 
     * `ON_`:`Soak`
 
-    The whole point of the exercise. A 1hr cycle during which automatic scheduling is suspended and the pump is enabled.
+      The whole point of the exercise. A 1hr cycle during which automatic scheduling is suspended and the pump is enabled.
 
   5.2 `Pump`
 
-  Controls the pump motor relay `RLY_PUMP` and heating element relay `RLY_HEAT`. These are combined into a single state as the heating element must only be supplied when there is sufficient water flow and is therefore dependent on the pump.
+    Controls the pump motor relay `RLY_PUMP` and heating element relay `RLY_HEAT`. These are combined into a single state as the heating element must only be supplied when there is sufficient water flow and is therefore dependent on the pump.
 
-  The `Pump` FSM also enforces the dependancy by all relay states - including the independent `Aux` FSM - on the master relay `RLY_SAFETY`.
+    The `Pump` FSM also enforces the dependancy by all relay states - including the independent `Aux` FSM - on the master relay `RLY_SAFETY`.
 
     * `Error`
 
-    Set when entering `Mode.Error`. `RLY_SAFETY` `RLY_PUMP` `RLY_HEAT` are cleared, as well as `RLY_AUX` by setting `Aux.Off`.
+      Set when entering `Mode.Error`. `RLY_SAFETY` `RLY_PUMP` `RLY_HEAT` are cleared, as well as `RLY_AUX` by setting `Aux.Off`.
 
     * `Off`
 
-    `RLY_SAFETY` enabled.
+      `RLY_SAFETY` enabled.
 
     * `On`
 
-    `RLY_SAFETY` `RLY_PUMP` enabled.
+      `RLY_SAFETY` `RLY_PUMP` enabled.
 
     * `Heat`
 
-    `RLY_SAFETY` `RLY_PUMP` `RLY_HEAT` enabled.
+      `RLY_SAFETY` `RLY_PUMP` `RLY_HEAT` enabled.
 
   5.3 `Aux`
 
-  Provides independent control of the auxiliary relay `RLY_AUX`. It is a separate state machine as its operation does not depend on the state of the pump. It is however dependent on the state of the heater, as well as the master relay `RLY_SAFETY`.
+    Provides independent control of the auxiliary relay `RLY_AUX`. It is a separate state machine as its operation does not depend on the state of the pump. It is however dependent on the state of the heater, as well as the master relay `RLY_SAFETY`.
 
     * `Off`
 
-    `RLY_AUX` is cleared.
+      `RLY_AUX` is cleared.
 
     * `On`
 
-    `RLY_AUX` enabled. If supplying a blower which causes the total load to exceed the rating of the mains circuit, it must ensure the heater is disabled by switching from `Pump.Heat` to `Pump.On`
+      `RLY_AUX` enabled. If supplying a blower which causes the total load to exceed the rating of the mains circuit, it must ensure the heater is disabled by switching from `Pump.Heat` to `Pump.On`
 
   5.4 `Menu`
 
-  Manages the handlers and output relevant to the control panel.
+    Manages the handlers and output relevant to the control panel.
 
     * `Error`
 
-    Set from `Mode.Error`, displaying the relevant error code.
+      Set from `Mode.Error`, displaying the relevant error code.
 
     * `Mode`
 
-    Displays the mode when entering any mode during normal operation.
+      Displays the mode when entering any mode during normal operation.
 
     * `NN.N`:`Setpoint`
 
-    Allows adjustment of the thermal control setpoint in 0.1°C increments.
+      Allows adjustment of the thermal control setpoint in 0.1°C increments.
 
     * `---`:`Timer`
 
-    Displays a countdown or other value relevant to the current scheduler mode.
+      Displays a countdown or other value relevant to the current scheduler mode.
 
     * `BL._`:`Blower`
 
-    Allows selection between `Aux.Off` and `Aux.On`
+      Allows selection between `Aux.Off` and `Aux.On`
 
     * `FT._`:`Footwell`
       `ST._`:`Steps`
       `HD._`:`Head`
       `PT._`:`Path`
 
-    Allows switching of low voltage auxiliary lighting circuits.
+      Allows switching of low voltage auxiliary lighting circuits.
 
     * `RST`:`SoftReset`
 
-    Executes `asm volatile ("  jmp 0")`
+      Executes `asm volatile ("  jmp 0")`
 
-4. **Thermal Control**
+6. **Thermal Control**
 
   Because of the latencies inherent in the system, a complicated PID controller isn't required, and the thermal regulation is fairly basic.
 
@@ -181,7 +187,7 @@ SpaController
 
   The combination of the smoothing and the trigger results in sensibly conservative durations of heater operation, at the same time barely reaching the duty cycle limits set by the scheduler, while sufficiently aggressive in maintaining a comfortable temperature during use.
 
-5. **Scheduler**
+7. **Scheduler**
 
   The scheduler is a bit ad-hoc and lacks any interactivity features. My requirements were pretty straight forward, requiring temperature maintenance to be predominantly performed during off-peak periods, and either disabling or restricting operation during shoulder and peak periods. I also wanted to define exception periods such as ensuring the temperature was correct at the end of the week.
 
@@ -228,6 +234,8 @@ SpaController
 [sc-rpi-ios]: https://github.com/tinybrain/spaduino/tree/rpi-ios/SpaController
 [ss]: https://github.com/tinybrain/spaduino/tree/master/SpaServer
 [sl]: https://github.com/tinybrain/spaduino/tree/master/Slimer
+[sch]: https://github.com/tinybrain/spaduino-schematics/
+[schpdf]: https://github.com/tinybrain/spaduino-schematics/raw/master/sp500-tinybrain-combined.pdf
 
 [maxim-ds3232]: https://www.maximintegrated.com/en/products/digital/real-time-clocks/DS3232.html
 [ft-rtc]: http://www.freetronics.com.au/collections/modules/products/real-time-clock-rtc-module
