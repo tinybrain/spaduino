@@ -71,7 +71,7 @@ Each of the four power relays uses a +5V GPIO line connected to a ULN2803 darlin
 
 The controller's primary and "high level" state, corresponding to the various user selectable modes and error states.
 
-* `ERR`:`Error`
+* `ERR`:`Mode.Error`
 
   A fatal error produced by sensor failure or limits. The displayed error codes are:
 
@@ -82,23 +82,23 @@ The controller's primary and "high level" state, corresponding to the various us
     - `CUR`:`HighLimit`
 
 
-* `INI`:`Init`
+* `INI`:`Mode.Init`
 
   Entry state, during which sensors and peripherals are configured.
 
-* `OFF`:`Off`
+* `OFF`:`Mode.Off`
 
   Idle state with all sensors peripherals initialised.
 
-* `AUT`:`Autoheat`
+* `AUT`:`Mode.Autoheat`
 
   The default idle state, during which operation is determined via the scheduler and thermal control.
 
-* `RPD`:`Rapidheat`
+* `RPD`:`Mode.apidheat`
 
   A 24hr cycle during which thermal regulation takes priority over any scheduling rules. This is for bringing the water back to temperature after changing out the water.
 
-* `ON_`:`Soak`
+* `ON_`:`Mode.Soak`
 
   The whole point of the exercise. A 1hr cycle during which automatic scheduling is suspended and the pump is enabled.
 
@@ -108,19 +108,19 @@ Controls the pump motor relay `RLY_PUMP` and heating element relay `RLY_HEAT`. T
 
 The `Pump` FSM also enforces the dependancy by all relay states - including the independent `Aux` FSM - on the master relay `RLY_SAFETY`.
 
-* `Error`
+* `Pump.Error`
 
   Set when entering `Mode.Error`. `RLY_SAFETY` `RLY_PUMP` `RLY_HEAT` are cleared, as well as `RLY_AUX` by setting `Aux.Off`.
 
-* `Off`
+* `Pump.Off`
 
   `RLY_SAFETY` enabled.
 
-* `On`
+* `Pump.On`
 
   `RLY_SAFETY` `RLY_PUMP` enabled.
 
-* `Heat`
+* `Pump.Heat`
 
   `RLY_SAFETY` `RLY_PUMP` `RLY_HEAT` enabled.
 
@@ -128,11 +128,11 @@ The `Pump` FSM also enforces the dependancy by all relay states - including the 
 
 Provides independent control of the auxiliary relay `RLY_AUX`. It is a separate state machine as its operation does not depend on the state of the pump. It is however dependent on the state of the heater, as well as the master relay `RLY_SAFETY`.
 
-* `Off`
+* `Aux.Off`
 
   `RLY_AUX` is cleared.
 
-* `On`
+* `Aux.On`
 
   `RLY_AUX` enabled. If supplying a blower which causes the total load to exceed the rating of the mains circuit, it must ensure the heater is disabled by switching from `Pump.Heat` to `Pump.On`
 
@@ -140,37 +140,37 @@ Provides independent control of the auxiliary relay `RLY_AUX`. It is a separate 
 
 Manages the handlers and output relevant to the control panel.
 
-* `Error`
+* `Menu.Error`
 
   Set from `Mode.Error`, displaying the relevant error code.
 
-* `Mode`
+* `Menu.Mode`
 
   Displays the mode when entering any mode during normal operation.
 
-* `NN.N`:`Setpoint`
+* `NN.N`:`Menu.Setpoint`
 
   Allows adjustment of the thermal control setpoint in 0.1°C increments.
 
-* `---`:`Timer`
+* `---`:`Menu.Timer`
 
   Displays a countdown or other value relevant to the current scheduler mode.
 
-* `BL._`:`Blower`
+* `BL._`:`Menu.Blower`
 
   Allows selection between `Aux.Off` and `Aux.On`
 
-* `FT._`:`Footwell`
+* `FT._`:`Menu.Footwell`
 
-  `ST._`:`Steps`
+  `ST._`:`Menu.Steps`
 
-  `HD._`:`Head`
+  `HD._`:`Menu.Head`
 
-  `PT._`:`Path`
+  `PT._`:`Menu.Path`
 
   Allows switching of low voltage auxiliary lighting circuits.
 
-* `RST`:`SoftReset`
+* `RST`:`Menu.SoftReset`
 
   Executes `asm volatile ("  jmp 0")`
 
