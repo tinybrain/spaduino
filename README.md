@@ -41,11 +41,11 @@ registers: `SHR_LATCH` `SHR_DATA` `SHR_CLK`.
 
 * High Limit Sense - [Vishay H11AA1 Optocoupler][vishay-h11aa1] for current sensing through the heating element: `HL_IN`.
 
-* Digital Thermometer - [Maxim DS1820 1-Wire][maxim-ds18s20] : `ONE_WIRE`.
+* Temperature - [Maxim DS18S20 1-Wire Thermometer][maxim-ds18s20] : `ONE_WIRE`.
 
 * Four channel FET driver on a [module][ft-fet] for switching external lighting.
 
-### 4. Power Relays
+### 3. Power Relays
 
 Each of the four power relays uses a +5V GPIO line connected to a ULN2803 darlington array. The array outputs a high current +12V signal which drives the relay coils.
 
@@ -65,7 +65,7 @@ Each of the four power relays uses a +5V GPIO line connected to a ULN2803 darlin
 
   Supplies an auxiliary blower induction motor (700W).
 
-### 5. Finite State Machines
+### 4. Finite State Machines
 
 #### Mode
 
@@ -174,7 +174,7 @@ Manages the handlers and output relevant to the control panel.
 
   Executes `asm volatile ("  jmp 0")`
 
-### 6. Thermal Control
+### 5. Thermal Control
 
 Because of the latencies inherent in the system, a complicated PID controller isn't required, and the thermal regulation is fairly basic.
 
@@ -188,7 +188,7 @@ A trigger state is then evaluated by comparing the averaged temperature against 
 
 The combination of the smoothing and the trigger results in sensibly conservative durations of heater operation, at the same time barely reaching the duty cycle limits set by the scheduler, while sufficiently aggressive in maintaining a comfortable temperature during use.
 
-### 7. Scheduler
+### 6. Scheduler
 
 The scheduler is a bit ad-hoc and lacks any interactivity features. My requirements were pretty straight forward, requiring temperature maintenance to be predominantly performed during off-peak periods, and either disabling or restricting operation during shoulder and peak periods. I also wanted to define exception periods such as ensuring the temperature was correct at the end of the week.
 
